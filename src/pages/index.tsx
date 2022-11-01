@@ -1,9 +1,14 @@
-import type { NextPage } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
+import cookies from "next-cookies";
 import Head from "next/head";
-import { trpc } from "../utils/trpc";
+import { useAuth } from "../components/UserProvider";
 
-const Home: NextPage = (props) => {
-
+const Home: NextPage = () => {
+  const { logOut } = useAuth();
 
   return (
     <>
@@ -14,37 +19,31 @@ const Home: NextPage = (props) => {
       </Head>
 
       <div className="flex h-screen w-screen items-center justify-center">
-        
+        <button onClick={logOut} className="btn">
+          Log out
+        </button>
       </div>
     </>
   );
 };
 
+export function getServerSideProps(
+  ctx: GetServerSidePropsContext
+): InferGetServerSidePropsType<any> {
+  const cookie = cookies(ctx);
+
+  if (!cookie.firebaseToken) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
 export default Home;
-
-type TechnologyCardProps = {
-  name: string;
-  description: string;
-  documentation: string;
-};
-
-const TechnologyCard = ({
-  name,
-  description,
-  documentation,
-}: TechnologyCardProps) => {
-  return (
-    <section className="flex flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl duration-500 motion-safe:hover:scale-105">
-      <h2 className="text-lg text-gray-700">{name}</h2>
-      <p className="text-sm text-gray-600">{description}</p>
-      <a
-        className="m-auto mt-3 w-fit text-sm text-violet-500 underline decoration-dotted underline-offset-2"
-        href={documentation}
-        target="_blank"
-        rel="noreferrer"
-      >
-        Documentation
-      </a>
-    </section>
-  );
-};

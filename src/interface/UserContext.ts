@@ -11,4 +11,5 @@ export interface EmailSignUpArgs extends EmailLoginArgs {
 export interface UserContextType {
   emailLogin: ({ email, password }: EmailLoginArgs) => void;
   emailSignUp: ({ email, password, name, confirm }: EmailSignUpArgs) => void;
+  logOut: () => void;
 }
