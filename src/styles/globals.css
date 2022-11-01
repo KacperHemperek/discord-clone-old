@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@layer components {
+  body {
+    @apply bg-brandgray-300;
+    font-family: "Noto sans", sans-serif;
+  }
+  .btn {
+    @apply min-w-[100px] rounded-lg bg-brandblue py-2 text-center text-lg text-brandwhite;
+  }
+  .input {
+    @apply mb-8 w-full rounded-lg bg-brandgray-200 px-4 py-3 text-lg outline-brandblue placeholder:text-brandgray-100;
+  }
+}
