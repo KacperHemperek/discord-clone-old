@@ -12,6 +12,8 @@ import {
 import { auth } from "../utils/firebase";
 
 import cookie from "js-cookie";
+import { useRouter } from "next/router";
+import { trpc } from "../utils/trpc";
 
 const UserContext = React.createContext<UserContextType>({
   emailLogin: ({}: EmailLoginArgs) => {},
@@ -25,7 +27,10 @@ export function useAuth() {
 const firebaseCookie = "firebaseToken";
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  async function emailLogin({ email, password, redirect }: EmailLoginArgs) {
+  const { mutate: createUser } = trpc.user.createUser.useMutation();
+  const router = useRouter();
+
+  async function emailLogin({ email, password }: EmailLoginArgs) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
@@ -40,15 +45,18 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     email,
     confirm,
     password,
-    redirect,
+    name,
   }: EmailSignUpArgs) {
+    console.log("creating user");
     try {
       if (password !== confirm) {
+        console.error("Password must be same");
         throw new Error("Passwords must match");
       }
-      await createUserWithEmailAndPassword(auth, email, password);
+      const creds = await createUserWithEmailAndPassword(auth, email, password);
 
-      console.log();
+      createUser({ email, name });
+      console.log("user " + name + " created successfully");
     } catch (e: any) {
       console.error(e.code);
     }
@@ -62,6 +70,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       }
       const token = await user.getIdToken();
       cookie.set(firebaseCookie, token, { expires: 14 });
+      console.log(user);
     }
 
     return auth.onAuthStateChanged(handleAuthChange);

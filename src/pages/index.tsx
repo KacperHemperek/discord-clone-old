@@ -2,11 +2,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
 
-const Home: NextPage = () => {
-  const hello = trpc.user.createUser.useMutation();
-  function addUser() {
-    hello.mutate({ email: "kacper@hemperek.pl", name: "Kacper Hemperek" });
-  }
+const Home: NextPage = (props) => {
+
 
   return (
     <>
@@ -17,9 +14,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex h-screen w-screen items-center justify-center">
-        <button onClick={addUser} className="btn">
-          Add User
-        </button>
+        
       </div>
     </>
   );

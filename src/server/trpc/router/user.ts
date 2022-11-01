@@ -4,7 +4,7 @@ import { z } from "zod";
 export const user = router({
   createUser: publicProcedure
     .input(z.object({ name: z.string(), email: z.string().email() }))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       console.log({ input });
       const user = await prisma?.user.create({
         data: {

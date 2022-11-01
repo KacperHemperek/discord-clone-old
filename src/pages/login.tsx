@@ -1,3 +1,9 @@
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
+import cookies from "next-cookies";
 import Link from "next/link";
 import React from "react";
 
@@ -22,6 +28,25 @@ function Login() {
       </div>
     </div>
   );
+}
+
+export function getServerSideProps(
+  ctx: GetServerSidePropsContext
+): InferGetServerSidePropsType<any> {
+  const cookie = cookies(ctx);
+
+  if (cookie.firebaseToken) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 }
 
 export default Login;

@@ -1,19 +1,14 @@
 export interface EmailLoginArgs {
   email: string;
   password: string;
-  redirect: string;
 }
 
 export interface EmailSignUpArgs extends EmailLoginArgs {
   confirm: string;
+  name: string;
 }
 
 export interface UserContextType {
-  emailLogin: ({ email, password, redirect }: EmailLoginArgs) => void;
-  emailSignUp: ({
-    email,
-    password,
-    redirect,
-    confirm,
-  }: EmailSignUpArgs) => void;
+  emailLogin: ({ email, password }: EmailLoginArgs) => void;
+  emailSignUp: ({ email, password, name, confirm }: EmailSignUpArgs) => void;
 }
