@@ -6,10 +6,14 @@ import type {
 import cookies from "next-cookies";
 import Head from "next/head";
 import { useAuth } from "../components/UserProvider";
+import useCurrentUser from "../hooks/useCurrentUser";
 
 const Home: NextPage = () => {
-  const { logOut, currentUser } = useAuth();
+  const { logOut } = useAuth();
+  const currentUser = useCurrentUser();
+
   console.log(currentUser);
+
   return (
     <>
       <Head>

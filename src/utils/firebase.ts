@@ -1,14 +1,19 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+console.log(process.env);
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyCiyoi_G1qZ-GytHyW1bteatU8nON5Pvw4",
+  authDomain: "discord-clone-5b087.firebaseapp.com",
+  projectId: "discord-clone-5b087",
+  storageBucket: "discord-clone-5b087.appspot.com",
+  messagingSenderId: "193834427921",
+  appId: "1:193834427921:web:4a56f34fd58da3ddbff3b0",
 };
-const app = initializeApp(firebaseConfig);
+
+export const app = initializeApp(firebaseConfig, "discord-clone");
+
+console.log(app);
 
 export const auth = getAuth(app);
