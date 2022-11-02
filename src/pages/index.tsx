@@ -10,9 +10,6 @@ import useCurrentUser from "../hooks/useCurrentUser";
 
 const Home: NextPage = () => {
   const { logOut } = useAuth();
-  const currentUser = useCurrentUser();
-
-  console.log(currentUser);
 
   return (
     <>
