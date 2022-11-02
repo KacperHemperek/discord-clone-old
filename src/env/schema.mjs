@@ -13,7 +13,7 @@ export const serverSchema = z.object({
   NEXT_PUBLIC_FIREBASE_PROJECT_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: z.string(),
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string(),
-  NEXT_PUBLIC_FIREBASE_APP_ID: z.string(),
+  FIREBASE_APP_ID: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
 });
 

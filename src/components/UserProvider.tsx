@@ -20,6 +20,7 @@ const UserContext = React.createContext<UserContextType>({
   emailLogin: ({}: EmailLoginArgs) => {},
   emailSignUp: ({}: EmailSignUpArgs) => {},
   logOut: () => {},
+  currentUser: null,
 });
 
 export function useAuth() {
@@ -29,8 +30,9 @@ export function useAuth() {
 const firebaseCookie = "firebaseToken";
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState(null);
   const { mutate: createUser } = trpc.user.createUser.useMutation();
+  const [currentMail, setCurrentMail] = useState<string | null>(null);
+  const currentUser = trpc.user.getUserByEmail.useQuery({ email: currentMail }).data;
   const router = useRouter();
 
   async function emailLogin({ email, password }: EmailLoginArgs) {
@@ -58,7 +60,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       }
       await createUserWithEmailAndPassword(auth, email, password);
       createUser({ email, name });
-      console.log("user " + name + " created successfully");
     } catch (e: any) {
       console.error(e.code);
     }
@@ -77,9 +78,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       }
       const token = await user.getIdToken();
       cookie.set(firebaseCookie, token, { expires: 14 });
-      if (user.email) {
-        prisma?.user.findFirst({ where: { email: user.email } });
-      }
+      setCurrentMail(user.email);
+
       router.push("/");
     }
 
@@ -95,7 +95,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const createContext = React.useCallback((): UserContextType => {
-    return { emailLogin, emailSignUp, logOut };
+    return { emailLogin, emailSignUp, logOut, currentUser };
   }, []);
   return (
     <UserContext.Provider value={createContext()}>

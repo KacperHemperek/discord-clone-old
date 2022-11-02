@@ -8,8 +8,8 @@ import Head from "next/head";
 import { useAuth } from "../components/UserProvider";
 
 const Home: NextPage = () => {
-  const { logOut } = useAuth();
-
+  const { logOut, currentUser } = useAuth();
+  console.log(currentUser);
   return (
     <>
       <Head>
