@@ -4,7 +4,6 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useAuth } from "../components/UserProvider";
 import { toast, ToastContainer } from "react-toastify";
-import { MdCheckCircle } from "react-icons/md";
 
 function Login() {
   const { emailLogin } = useAuth();

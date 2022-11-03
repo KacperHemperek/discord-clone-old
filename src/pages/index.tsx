@@ -7,11 +7,9 @@ import cookies from "next-cookies";
 import Head from "next/head";
 import NavBar from "../components/NavBar";
 import { useAuth } from "../components/UserProvider";
-import useCurrentUser from "../hooks/useCurrentUser";
 
 const Home: NextPage = () => {
-  const { logOut } = useAuth();
-  const currentUser = useCurrentUser();
+  const { logOut, currentUser } = useAuth();
 
   return (
     <>
@@ -24,7 +22,7 @@ const Home: NextPage = () => {
       <div className="flex h-screen w-screen items-center justify-center">
         <NavBar />
 
-        <h1 className="font text-3xl">Hi, {currentUser?.name}</h1>
+        <h1 className="font text-3xl">Hi, {currentUser()?.name}</h1>
         <button onClick={logOut} className="btn">
           Log out
         </button>
