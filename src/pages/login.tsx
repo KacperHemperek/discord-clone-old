@@ -1,26 +1,30 @@
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import cookies from "next-cookies";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useAuth } from "../components/UserProvider";
+import { toast, ToastContainer } from "react-toastify";
+import { MdCheckCircle } from "react-icons/md";
 
 function Login() {
   const { emailLogin } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    toast.promise(async () => emailLogin({ email, password }), {
+      pending: "Waiting for response...",
+      success: "User logged in!",
+      error: "Couldn't login user!",
+    });
+  }
 
   return (
     <div className="flex h-screen w-screen items-center justify-center text-brandwhite">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          emailLogin({ email, password });
-        }}
+        onSubmit={handleLogin}
         className="flex w-80 flex-col rounded-xl bg-brandgray-500 p-8 shadow-lg md:w-96"
       >
         <h1 className=" mb-6 text-xl font-bold uppercase ">Login</h1>

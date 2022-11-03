@@ -10,6 +10,7 @@ import useCurrentUser from "../hooks/useCurrentUser";
 
 const Home: NextPage = () => {
   const { logOut } = useAuth();
+  const currentUser = useCurrentUser();
 
   return (
     <>
@@ -19,7 +20,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex h-screen w-screen items-center justify-center">
+      <div className="flex h-screen w-screen flex-col items-center justify-center">
+        <h1 className="text-3xl font">Hi, {currentUser?.name}</h1>
         <button onClick={logOut} className="btn">
           Log out
         </button>

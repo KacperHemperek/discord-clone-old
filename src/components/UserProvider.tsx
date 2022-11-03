@@ -37,10 +37,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   async function emailLogin({ email, password }: EmailLoginArgs) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-
-      console.log("User logged in successfully");
     } catch (e: any) {
-      console.error(e.message);
       throw new Error(e.code);
     }
   }
@@ -51,16 +48,17 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     password,
     name,
   }: EmailSignUpArgs) {
-    console.log("creating user");
     try {
       if (password !== confirm) {
-        console.error("Password must be same");
         throw new Error("Passwords must match");
       }
-      await createUserWithEmailAndPassword(auth, email, password);
-      createUser({ email, name });
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      if (cred) {
+        createUser({ email, name });
+      }
     } catch (e: any) {
-      console.error(e.code);
+      console.error(e);
+      throw new Error(e);
     }
   }
 
@@ -78,7 +76,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       }
       const token = await user.getIdToken();
       cookie.set(firebaseCookie, token, { expires: 14 });
-      console.log(user.email);
       setCurrentMail(user.email);
 
       router.push("/");

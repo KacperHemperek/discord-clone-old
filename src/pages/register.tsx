@@ -2,6 +2,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import cookies from "next-cookies";
 import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { useAuth } from "../components/UserProvider";
 
 function Login() {
@@ -13,11 +14,24 @@ function Login() {
 
   async function addUser(e: React.FormEvent) {
     e.preventDefault();
-    try {
-      emailSignUp({ email, password, name, confirm });
-    } catch (e) {
-      console.error(e);
-    }
+    toast.promise(
+      async () => {
+        try {
+          await emailSignUp({ email, password, name, confirm });
+        } catch (e: any) {
+          setPassword("");
+          setConfirm("");
+          setName("");
+          setEmail("");
+          throw new Error("User coudn't be created");
+        }
+      },
+      {
+        pending: "Waiting for response...",
+        success: "Signed in successfully",
+        error: "Couldn't sign up user",
+      }
+    );
   }
 
   return (
