@@ -5,6 +5,7 @@ import type {
 } from "next";
 import cookies from "next-cookies";
 import Head from "next/head";
+import NavBar from "../components/NavBar";
 import { useAuth } from "../components/UserProvider";
 import useCurrentUser from "../hooks/useCurrentUser";
 
@@ -20,8 +21,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex h-screen w-screen flex-col items-center justify-center">
-        <h1 className="text-3xl font">Hi, {currentUser?.name}</h1>
+      <div className="flex h-screen w-screen items-center justify-center">
+        <NavBar />
+
+        <h1 className="font text-3xl">Hi, {currentUser?.name}</h1>
         <button onClick={logOut} className="btn">
           Log out
         </button>
