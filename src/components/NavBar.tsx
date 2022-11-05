@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { MdClose, MdChevronLeft, MdAdd, MdSearch } from "react-icons/md";
 import useNav from "../hooks/useNav";
@@ -9,6 +9,22 @@ function NavBar() {
   const { navOpen, setNav } = useNav();
   const [showAllChannels, setShowAllChannels] = useState(true);
   const [modalOpen, setModalOpen] = useState(true);
+  const [search, setSearch] = useState("");
+  const mockChannels: { title: string; id: number }[] = [
+    {
+      title: "Front-end Developers",
+      id: 0,
+    },
+    { title: "Backend", id: 1 },
+    { title: "Welcome", id: 2 },
+  ];
+  const searchResults = useMemo(() => {
+    if (search.trim() === "") return null;
+    return mockChannels.filter((item) => {
+      const regex = new RegExp(search, "gi");
+      return item.title.toLowerCase().match(regex);
+    });
+  }, [search]);
 
   const closeButton = (
     <button
@@ -18,15 +34,6 @@ function NavBar() {
       <MdClose className="h-6 w-6" />
     </button>
   );
-
-  const mockChannels: { title: string; id: number }[] = [
-    {
-      title: "Front-end Developers",
-      id: 0,
-    },
-    { title: "Backend", id: 1 },
-    { title: "Welcome", id: 2 },
-  ];
 
   return (
     <>
@@ -66,19 +73,21 @@ function NavBar() {
         )}
         <div className="flex h-full flex-col justify-between ">
           <div className="px-8 py-6">
-            {/* Search Bar */}
-            {/* Chat List */}
             {showAllChannels ? (
               <>
+                {/* Search Bar */}
                 <div className="mb-8 flex items-center rounded-md bg-brandgray-200 py-4 px-3 outline-2 outline-brandblue">
                   <MdSearch className="h-5 w-5" />
                   <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     type="text"
                     className="flex-1 bg-transparent pl-2 outline-none placeholder:text-brandgray-100"
                     placeholder={"Search"}
                   />
                 </div>
-                <ChanelsList channels={mockChannels} />
+                {/* Chat List */}
+                <ChanelsList channels={searchResults ?? mockChannels} />
               </>
             ) : (
               <div>lol</div>
@@ -88,6 +97,7 @@ function NavBar() {
           <div className=""></div>
         </div>
       </div>
+      {/* Modal to create new Chat */}
       {modalOpen && (
         <div className="ld:w-[650px] fixed top-1/2 left-1/2 z-50 flex w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl bg-brandgray-500 py-4 px-5 shadow-xl md:w-[500px] md:py-8 md:px-10">
           <h1 className="mb-6 font-bold uppercase">new channle</h1>
