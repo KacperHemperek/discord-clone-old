@@ -8,6 +8,7 @@ import Overlay from "./Overlay";
 function NavBar() {
   const { navOpen, setNav } = useNav();
   const [showAllChannels, setShowAllChannels] = useState(true);
+  const [modalOpen, setModalOpen] = useState(true);
 
   const closeButton = (
     <button
@@ -29,17 +30,27 @@ function NavBar() {
 
   return (
     <>
-      <Overlay onClick={() => setNav(false)} show={navOpen} />
+      <Overlay onClick={() => setNav(false)} show={navOpen && !modalOpen} />
+      <Overlay
+        onClick={() => setModalOpen(false)}
+        show={modalOpen}
+        className="z-30"
+      />
       <div
         className={`${
           navOpen ? "-translate-x-0" : "-translate-x-[115%] lg:-translate-x-0"
-        } fixed left-0 z-50 flex h-screen w-80 flex-col bg-brandgray-500 transition lg:static`}
+        } fixed left-0 z-20 flex h-screen w-80 flex-col bg-brandgray-500 transition lg:static`}
       >
         {/* Header of Navbar */}
         {showAllChannels ? (
           <div className="relative flex h-16 items-center justify-between pl-8 pr-6 shadow-md">
             <h1 className="text-lg font-bold ">Channels</h1>
-            <button className=" flex h-8 w-8 items-center justify-center rounded-md bg-brandgray-300">
+            <button
+              onClick={() => {
+                setModalOpen(true);
+              }}
+              className=" flex h-8 w-8 items-center justify-center rounded-md bg-brandgray-300"
+            >
               <MdAdd className="h-6 w-6" />
             </button>
             {closeButton}
@@ -77,6 +88,22 @@ function NavBar() {
           <div className=""></div>
         </div>
       </div>
+      {modalOpen && (
+        <div className="ld:w-[650px] fixed top-1/2 left-1/2 z-50 flex w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl bg-brandgray-500 py-4 px-5 shadow-xl md:w-[500px] md:py-8 md:px-10">
+          <h1 className="mb-6 font-bold uppercase">new channle</h1>
+          <input
+            type="text"
+            className="input mb-4 md:mb-6"
+            placeholder={"Channel Name"}
+          />
+          <textarea
+            rows={4}
+            className="input mb-4 resize-none md:mb-6"
+            placeholder={"Channel Name"}
+          />
+          <button className="btn self-end">Save</button>
+        </div>
+      )}
     </>
   );
 }
