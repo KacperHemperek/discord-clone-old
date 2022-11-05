@@ -26,7 +26,10 @@ const Home: NextPage = () => {
         <NavBar />
         <div className="flex w-full flex-col">
           <div className="flex min-h-[64px] items-center px-4 shadow-lg md:px-16">
-            <button className="cursor-pointer" onClick={() => setNav(true)}>
+            <button
+              className="cursor-pointer lg:hidden"
+              onClick={() => setNav(true)}
+            >
               <MdMenu className="mr-6 h-6 w-6" />
             </button>
             <h1 className="text-lg font-bold uppercase">Frontend Developers</h1>
