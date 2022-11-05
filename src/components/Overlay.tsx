@@ -13,8 +13,8 @@ function Overlay({
     <div
       onClick={onClick}
       className={`${
-        show ? "opacity-100 " : "hidden opacity-0"
-      } ${className} fixed h-full w-screen bg-black/60 transition`}
+        show ? "opacity-100 " : "pointer-events-none opacity-0"
+      } ${className} fixed h-full w-screen bg-black/60 transition duration-300`}
     ></div>
   );
 }
