@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { User } from "@prisma/client";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import {
@@ -14,12 +14,14 @@ import { useOnClickOutside } from "../hooks/useClickOutside";
 import useNav from "../hooks/useNav";
 import ChanelsList from "./ChanelsList";
 import Overlay from "./Overlay";
+import UserCard from "./UserCard";
+import UserList from "./UserList";
 import { useAuth } from "./UserProvider";
 
 function NavBar() {
   const { navOpen, setNav } = useNav();
   const { logOut } = useAuth();
-  const [showAllChannels, setShowAllChannels] = useState(true);
+  const [showAllChannels, setShowAllChannels] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -37,18 +39,46 @@ function NavBar() {
   const buttonRef = useRef<null | HTMLButtonElement>(null);
   useOnClickOutside(menuRef, hideMenu, buttonRef);
 
-  const mockChannels: { title: string; id: number }[] = [
+  const mockChannels: {
+    title: string;
+    id: number;
+    description?: string;
+    users?: User[];
+  }[] = [
     {
       title: "Front-end Developers",
       id: 0,
     },
-    { title: "Backend", id: 1 },
-    { title: "Welcome", id: 2 },
+    {
+      title: "Backend",
+      id: 1,
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora et est distinctio, dolores excepturi itaque dolor quisquam magnam possimus laborum!",
+      users: [
+        { name: "Kacper Hemperek", email: "kacper@hemperek.com", id: 1 },
+        { name: "Martyna", email: "martyna@maruda.com", id: 2 },
+        { name: "Aleksander", email: "aleksander@example.com", id: 3 },
+      ],
+    },
+    {
+      title: "Welcome",
+      id: 2,
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora et est distinctio, dolores excepturi itaque ",
+      users: [
+        { name: "Kacper Hemperek", email: "kacper@hemperek.com", id: 1 },
+        {
+          name: "Martyna",
+          email: "martyna@maruda.com",
+          id: 2,
+        },
+      ],
+    },
   ];
   const searchResults = useMemo(() => {
     if (search.trim() === "") return null;
     return mockChannels.filter((item) => {
-      const regex = new RegExp(search, "gi");
+      const regex = new RegExp(search.trim(), "gi");
       return item.title.toLowerCase().match(regex);
     });
   }, [search]);
@@ -113,23 +143,25 @@ function NavBar() {
                 <ChanelsList channels={searchResults ?? mockChannels} />
               </>
             ) : (
-              <div>lol</div>
+              <>
+                <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
+                  Channel Name
+                </h2>
+                <p className="mb-10">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Commodi cumque repellendus repudiandae suscipit dignissimos
+                  porro saepe voluptas ratione quam voluptate.
+                </p>
+                <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
+                  Members
+                </h2>
+                <UserList users={mockChannels[1]?.users || []} />
+              </>
             )}
           </div>
           {/* User Account */}
           <div className="flex justify-between bg-brandgray-500 px-10 py-5">
-            <div className=" flex items-center">
-              <div className="relative mr-4 h-10 w-10 overflow-hidden rounded-md">
-                <Image
-                  src="https://i.pravatar.cc/400"
-                  alt={"avatar image"}
-                  layout={"fill"}
-                />
-              </div>
-              <p className="font-bold text-brandgray-100">
-                {currentUser()?.name}
-              </p>
-            </div>
+            <UserCard name={currentUser()?.name || "Guest"} />
             <div className="relative flex">
               {/* Floating Menu */}
               <div
