@@ -11,7 +11,6 @@ import { useAuth } from "../components/UserProvider";
 import useNav from "../hooks/useNav";
 
 const Home: NextPage = () => {
-  const { logOut, currentUser } = useAuth();
   const { navOpen, setNav } = useNav();
 
   return (
@@ -35,10 +34,7 @@ const Home: NextPage = () => {
             <h1 className="text-lg font-bold uppercase">Frontend Developers</h1>
           </div>
           <div className="h-full p-4 md:px-16 md:py-9">
-            <h1 className="font text-3xl">Hi, {currentUser()?.name}</h1>
-            <button onClick={logOut} className="btn">
-              Log out
-            </button>
+            
           </div>
         </div>
       </div>

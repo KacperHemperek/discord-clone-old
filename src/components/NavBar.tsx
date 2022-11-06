@@ -1,16 +1,42 @@
 import Image from "next/image";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 
-import { MdClose, MdChevronLeft, MdAdd, MdSearch } from "react-icons/md";
+import {
+  MdClose,
+  MdChevronLeft,
+  MdAdd,
+  MdSearch,
+  MdExpandMore,
+  MdAccountCircle,
+  MdLogout,
+} from "react-icons/md";
+import { useOnClickOutside } from "../hooks/useClickOutside";
 import useNav from "../hooks/useNav";
 import ChanelsList from "./ChanelsList";
 import Overlay from "./Overlay";
+import { useAuth } from "./UserProvider";
 
 function NavBar() {
   const { navOpen, setNav } = useNav();
+  const { logOut } = useAuth();
   const [showAllChannels, setShowAllChannels] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const { currentUser } = useAuth();
+  const hideMenu = useCallback(() => {
+    setShowAccountMenu(false);
+  }, []);
+  const closeNav = useCallback(() => {
+    setNav(false);
+  }, []);
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+  }, []);
+  const menuRef = useRef<null | HTMLDivElement>(null);
+  const buttonRef = useRef<null | HTMLButtonElement>(null);
+  useOnClickOutside(menuRef, hideMenu, buttonRef);
+
   const mockChannels: { title: string; id: number }[] = [
     {
       title: "Front-end Developers",
@@ -38,16 +64,12 @@ function NavBar() {
 
   return (
     <>
-      <Overlay onClick={() => setNav(false)} show={navOpen && !modalOpen} />
-      <Overlay
-        onClick={() => setModalOpen(false)}
-        show={modalOpen}
-        className="z-30"
-      />
+      <Overlay onClick={closeNav} show={navOpen && !modalOpen} />
+      <Overlay onClick={closeModal} show={modalOpen} className="z-30" />
       <div
         className={`${
           navOpen ? "-translate-x-0" : "-translate-x-[115%] lg:-translate-x-0"
-        } fixed left-0 z-20 flex h-screen w-80 flex-col bg-brandgray-400 transition lg:static`}
+        } fixed left-0 z-20 flex h-screen w-80 min-w-[320px] flex-col bg-brandgray-400 transition lg:static`}
       >
         {/* Header of Navbar */}
         {showAllChannels ? (
@@ -95,13 +117,47 @@ function NavBar() {
             )}
           </div>
           {/* User Account */}
-          <div className=" px-10 py-3">
-            <div className="relative h-10 w-10 overflow-hidden rounded-md">
-              <Image
-                src="https://i.pravatar.cc/400"
-                alt={"avatar image"}
-                layout={"fill"}
-              />
+          <div className="flex justify-between bg-brandgray-500 px-10 py-5">
+            <div className=" flex items-center">
+              <div className="relative mr-4 h-10 w-10 overflow-hidden rounded-md">
+                <Image
+                  src="https://i.pravatar.cc/400"
+                  alt={"avatar image"}
+                  layout={"fill"}
+                />
+              </div>
+              <p className="font-bold text-brandgray-100">
+                {currentUser()?.name}
+              </p>
+            </div>
+            <div className="relative flex">
+              {/* Floating Menu */}
+              <div
+                ref={menuRef}
+                className={`${
+                  showAccountMenu
+                    ? "opacity-100"
+                    : "pointer-events-none translate-y-4 opacity-0"
+                } absolute bottom-full right-0 flex w-48 flex-col space-y-2 rounded-md  border border-brandgray-100 bg-brandgray-300 p-3 transition`}
+              >
+                <button className=" flex items-center rounded-md p-3 transition hover:bg-brandgray-200">
+                  <MdAccountCircle className="mr-2 h-5 w-5 text-brandwhite" />
+                  <p className="text-xs font-medium">Account</p>
+                </button>
+                <button
+                  onClick={logOut}
+                  className=" flex items-center rounded-md p-3 transition hover:bg-brandgray-200"
+                >
+                  <MdLogout className="mr-2 h-5 w-5 text-red-500" />
+                  <p className="text-xs font-medium text-red-500">Logout</p>
+                </button>
+              </div>
+              <button
+                onClick={() => setShowAccountMenu((prev) => !prev)}
+                ref={buttonRef}
+              >
+                <MdExpandMore className="h-5 w-5 text-brandwhite" />
+              </button>
             </div>
           </div>
         </div>
