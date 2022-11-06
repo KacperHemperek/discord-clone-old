@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useMemo, useState } from "react";
 
 import { MdClose, MdChevronLeft, MdAdd, MdSearch } from "react-icons/md";
@@ -8,7 +9,7 @@ import Overlay from "./Overlay";
 function NavBar() {
   const { navOpen, setNav } = useNav();
   const [showAllChannels, setShowAllChannels] = useState(true);
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const mockChannels: { title: string; id: number }[] = [
     {
@@ -29,7 +30,7 @@ function NavBar() {
   const closeButton = (
     <button
       onClick={() => setNav(false)}
-      className="btn absolute -right-11 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl bg-brandgray-500 p-0 lg:hidden"
+      className="btn absolute -right-11 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl bg-brandgray-400 p-0 lg:hidden"
     >
       <MdClose className="h-6 w-6" />
     </button>
@@ -46,11 +47,11 @@ function NavBar() {
       <div
         className={`${
           navOpen ? "-translate-x-0" : "-translate-x-[115%] lg:-translate-x-0"
-        } fixed left-0 z-20 flex h-screen w-80 flex-col bg-brandgray-500 transition lg:static`}
+        } fixed left-0 z-20 flex h-screen w-80 flex-col bg-brandgray-400 transition lg:static`}
       >
         {/* Header of Navbar */}
         {showAllChannels ? (
-          <div className="relative flex h-16 items-center justify-between pl-8 pr-6 shadow-md">
+          <div className="relative flex min-h-[64px] items-center justify-between bg-brandgray-400 pl-8 pr-6 shadow-md">
             <h1 className="text-lg font-bold ">Channels</h1>
             <button
               onClick={() => {
@@ -63,8 +64,8 @@ function NavBar() {
             {closeButton}
           </div>
         ) : (
-          <div className="relative flex h-16 items-center space-x-2 px-5 shadow-md">
-            <button className="btn flex h-9 w-9 items-center justify-center  bg-brandgray-500 p-0">
+          <div className="relative flex min-h-[64px] items-center space-x-2 px-5 shadow-md">
+            <button className="btn flex h-9 w-9 items-center justify-center  bg-brandgray-400 p-0">
               <MdChevronLeft className="h-full w-full" />
             </button>
             <h1 className="text-lg font-bold ">All Channels</h1>
@@ -94,12 +95,20 @@ function NavBar() {
             )}
           </div>
           {/* User Account */}
-          <div className=""></div>
+          <div className=" px-10 py-3">
+            <div className="relative h-10 w-10 overflow-hidden rounded-md">
+              <Image
+                src="https://i.pravatar.cc/400"
+                alt={"avatar image"}
+                layout={"fill"}
+              />
+            </div>
+          </div>
         </div>
       </div>
       {/* Modal to create new Chat */}
       {modalOpen && (
-        <div className="ld:w-[650px] fixed top-1/2 left-1/2 z-50 flex w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl bg-brandgray-500 py-4 px-5 shadow-xl md:w-[500px] md:py-8 md:px-10">
+        <div className="ld:w-[650px] fixed top-1/2 left-1/2 z-50 flex w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl bg-brandgray-400 py-4 px-5 shadow-xl md:w-[500px] md:py-8 md:px-10">
           <h1 className="mb-6 font-bold uppercase">new channle</h1>
           <input
             type="text"
@@ -109,7 +118,7 @@ function NavBar() {
           <textarea
             rows={4}
             className="input mb-4 resize-none md:mb-6"
-            placeholder={"Channel Name"}
+            placeholder={"Channel Description"}
           />
           <button className="btn self-end">Save</button>
         </div>
