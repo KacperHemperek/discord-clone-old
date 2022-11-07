@@ -7,8 +7,8 @@ import cookies from "next-cookies";
 import Head from "next/head";
 import { MdMenu } from "react-icons/md";
 import NavBar from "../components/NavBar";
-import { useAuth } from "../components/UserProvider";
 import useNav from "../hooks/useNav";
+import Layout from "../layouts/layout";
 
 const Home: NextPage = () => {
   const { navOpen, setNav } = useNav();
@@ -21,23 +21,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex h-screen w-screen  text-brandwhite">
-        <NavBar />
-        <div className="flex w-full flex-col">
-          <div className="flex min-h-[64px] items-center px-4 shadow-lg md:px-16">
-            <button
-              className="cursor-pointer lg:hidden"
-              onClick={() => setNav(true)}
-            >
-              <MdMenu className="mr-6 h-6 w-6" />
-            </button>
-            <h1 className="text-lg font-bold uppercase">Frontend Developers</h1>
-          </div>
-          <div className="h-full p-4 md:px-16 md:py-9">
-            
-          </div>
-        </div>
-      </div>
+      <Layout>haha</Layout>
     </>
   );
 };

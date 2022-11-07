@@ -36,7 +36,7 @@ model Message {
 model Channel {
   id       Int       @id @unique() @default(autoincrement())
   messages Message[]
-  name     String
+  name     String    @unique()
   desc     String
   users    User[]
 }

@@ -73,28 +73,20 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     return userQuery.data;
   }
 
-  function authSubscribtion() {
-    async function handleAuthChange(user: User | null) {
-      if (!user) {
-        cookie.remove(firebaseCookie);
-        router.push("/login");
-        return;
-      }
-      const token = await user.getIdToken();
-      cookie.set(firebaseCookie, token, { expires: 14 });
-
-      router.push("/");
+  async function handleAuthChange(user: User | null) {
+    if (!user) {
+      cookie.remove(firebaseCookie);
+      router.push("/login");
+      return;
     }
-
-    return auth.onAuthStateChanged(handleAuthChange);
+    const token = await user.getIdToken();
+    cookie.set(firebaseCookie, token, { expires: 14 });
+    console.log("redirecting");
+    router.push("/");
   }
 
   useEffect(() => {
-    const unsubscribe = authSubscribtion();
-
-    return () => {
-      unsubscribe();
-    };
+    auth.onAuthStateChanged(handleAuthChange);
   }, []);
 
   const createContext = React.useCallback((): UserContextType => {

@@ -7,11 +7,13 @@ function UserList({
 }: {
   users: { name: string; email: string; id: number }[];
 }) {
-  return <div className="flex flex-col space-y-6">
-  {users.map((user) => (
-    <UserCard name={user.name} />
-  ))}
-</div>
+  return (
+    <div className="flex flex-col space-y-6">
+      {users.map((user) => (
+        <UserCard name={user.name} key={user.name + user.id} />
+      ))}
+    </div>
+  );
 }
 
 export default UserList;
