@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { NavContext } from "../pages/_app";
+import { NavContext } from "../components/NavProvider";
 
 function useNav() {
   return useContext(NavContext);

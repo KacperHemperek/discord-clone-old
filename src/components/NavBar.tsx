@@ -90,7 +90,6 @@ function NavBar() {
   ];
 
   const searchResults = useMemo(() => {
-    if (search.trim() === "") return null;
     return mockChannels.filter((item) => {
       const regex = new RegExp(search.trim(), "gi");
       return item.title.toLowerCase().match(regex);
@@ -161,7 +160,10 @@ function NavBar() {
                   />
                 </div>
                 {/* Chat List */}
-                <ChanelsList channels={searchResults ?? mockChannels} />
+                <ChanelsList
+                  setShowAllChannels={() => setShowAllChannels(false)}
+                  channels={searchResults}
+                />
               </>
             ) : (
               <>

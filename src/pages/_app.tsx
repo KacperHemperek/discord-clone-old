@@ -5,50 +5,8 @@ import { trpc } from "../utils/trpc";
 import UserProvider from "../components/UserProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { createContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-
-interface InitialNavContextType {
-  navOpen: boolean;
-  setNav: (...args: any) => void;
-  channelId: number | null;
-}
-
-const initialNavContext = {
-  navOpen: false,
-  setNav: (value: boolean) => {},
-  channelId: null,
-};
-
-export const NavContext =
-  createContext<InitialNavContextType>(initialNavContext);
-
-const NavProvider = ({ children }: { children: React.ReactNode }) => {
-  const [navOpen, setNavOpen] = useState(false);
-  const [channelId, setChannelId] = useState<number | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    setNavOpen(false);
-    if (router.query.slug) {
-      setChannelId(Number(router.query.slug));
-    }
-  }, [router.asPath]);
-
-  return (
-    <NavContext.Provider
-      value={{
-        navOpen,
-        setNav: (value: boolean) => {
-          setNavOpen(value);
-        },
-        channelId,
-      }}
-    >
-      {children}
-    </NavContext.Provider>
-  );
-};
+import React from "react";
+import NavProvider from "../components/NavProvider";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (

@@ -1,12 +1,18 @@
 import Link from "next/link";
 import React from "react";
+import useNav from "../hooks/useNav";
 
 export interface ChanelCardProps {
   title: string;
   id: number;
+  onClick: () => void;
 }
 
-function ChanelCard({ id, title }: ChanelCardProps) {
+function ChanelCard({
+  id,
+  title,
+  onClick: setShowAllChannels,
+}: ChanelCardProps) {
   function getShort() {
     return title
       .split(" ")
@@ -18,7 +24,10 @@ function ChanelCard({ id, title }: ChanelCardProps) {
 
   return (
     <Link href={`/${id}`}>
-      <div className="flex cursor-pointer items-center uppercase">
+      <div
+        onClick={setShowAllChannels}
+        className="flex cursor-pointer items-center uppercase"
+      >
         <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-md bg-brandgray-300 font-semibold">
           {getShort()}
         </div>
