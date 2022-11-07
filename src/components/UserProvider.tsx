@@ -36,7 +36,10 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   async function emailLogin({ email, password }: EmailLoginArgs) {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      if (cred) {
+        router.push("/");
+      }
     } catch (e: any) {
       throw new Error(e.code);
     }
@@ -55,6 +58,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       if (cred) {
         createUser({ email, name });
+        router.push("/");
       }
     } catch (e: any) {
       console.error(e);
@@ -64,6 +68,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   function logOut() {
     signOut(auth);
+    router.push("/login");
   }
 
   function currentUser() {
@@ -76,17 +81,15 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   async function handleAuthChange(user: User | null) {
     if (!user) {
       cookie.remove(firebaseCookie);
-      router.push("/login");
       return;
     }
     const token = await user.getIdToken();
     cookie.set(firebaseCookie, token, { expires: 14 });
-    console.log("redirecting");
-    router.push("/");
   }
 
   useEffect(() => {
-    auth.onAuthStateChanged(handleAuthChange);
+    const unsub = auth.onAuthStateChanged(handleAuthChange);
+    return () => unsub();
   }, []);
 
   const createContext = React.useCallback((): UserContextType => {
