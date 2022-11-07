@@ -5,14 +5,10 @@ import type {
 } from "next";
 import cookies from "next-cookies";
 import Head from "next/head";
-import { MdMenu } from "react-icons/md";
-import NavBar from "../components/NavBar";
 import useNav from "../hooks/useNav";
 import Layout from "../layouts/layout";
 
 const Home: NextPage = () => {
-  const { navOpen, setNav } = useNav();
-
   return (
     <>
       <Head>
