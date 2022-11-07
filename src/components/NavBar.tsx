@@ -1,5 +1,12 @@
 import { User } from "@prisma/client";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   MdClose,
@@ -12,7 +19,6 @@ import {
 } from "react-icons/md";
 import { useOnClickOutside } from "../hooks/useClickOutside";
 import useNav from "../hooks/useNav";
-import useOnRouteChnage from "../hooks/useOnRouteChnage";
 import AddChatModal from "./AddChatModal";
 import ChanelsList from "./ChanelsList";
 import Overlay from "./Overlay";
@@ -20,23 +26,28 @@ import UserCard from "./UserCard";
 import UserList from "./UserList";
 import { useAuth } from "./UserProvider";
 
-function NavBar({ channel }: { channel: number }) {
-  const { navOpen, setNav } = useNav();
+function NavBar() {
+  const { navOpen, setNav, channelId } = useNav();
   const { logOut } = useAuth();
-  const [showAllChannels, setShowAllChannels] = useState(false);
+  const [showAllChannels, setShowAllChannels] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const { currentUser } = useAuth();
+  const router = useRouter();
+
   const hideMenu = useCallback(() => {
     setShowAccountMenu(false);
   }, []);
+
   const closeNav = useCallback(() => {
     setNav(false);
   }, []);
+
   const closeModal = useCallback(() => {
     setModalOpen(false);
   }, []);
+
   const menuRef = useRef<null | HTMLDivElement>(null);
   const buttonRef = useRef<null | HTMLButtonElement>(null);
   useOnClickOutside(menuRef, hideMenu, buttonRef);
@@ -77,6 +88,7 @@ function NavBar({ channel }: { channel: number }) {
       ],
     },
   ];
+
   const searchResults = useMemo(() => {
     if (search.trim() === "") return null;
     return mockChannels.filter((item) => {
@@ -84,6 +96,10 @@ function NavBar({ channel }: { channel: number }) {
       return item.title.toLowerCase().match(regex);
     });
   }, [search]);
+
+  useEffect(() => {
+    setShowAllChannels(false);
+  }, [router.asPath]);
 
   const closeButton = (
     <button
@@ -119,7 +135,10 @@ function NavBar({ channel }: { channel: number }) {
           </div>
         ) : (
           <div className="relative flex min-h-[64px] items-center space-x-2 px-5 shadow-md">
-            <button className="btn flex h-9 w-9 items-center justify-center  bg-brandgray-400 p-0">
+            <button
+              onClick={() => setShowAllChannels(true)}
+              className="btn flex h-9 w-9 items-center justify-center  bg-brandgray-400 p-0"
+            >
               <MdChevronLeft className="h-full w-full" />
             </button>
             <h1 className="text-lg font-bold ">All Channels</h1>
@@ -157,7 +176,14 @@ function NavBar({ channel }: { channel: number }) {
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
                   Members
                 </h2>
-                <UserList users={mockChannels[1]?.users || []} />
+                {/* change hardcoded channels to the channel that is now selected */}
+                <UserList
+                  users={
+                    mockChannels.filter(
+                      (channel) => channel.id === channelId
+                    )[0]?.users ?? []
+                  }
+                />
               </>
             )}
           </div>

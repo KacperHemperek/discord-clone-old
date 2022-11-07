@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export interface ChanelCardProps {
@@ -16,14 +17,16 @@ function ChanelCard({ id, title }: ChanelCardProps) {
   }
 
   return (
-    <div className="flex items-center uppercase">
-      <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-md bg-brandgray-300 font-semibold">
-        {getShort()}
+    <Link href={`/${id}`}>
+      <div className="flex cursor-pointer items-center uppercase">
+        <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-md bg-brandgray-300 font-semibold">
+          {getShort()}
+        </div>
+        <h3 className="flex-1 truncate whitespace-nowrap  text-lg font-bold">
+          {title}
+        </h3>
       </div>
-      <h3 className="flex-1 truncate whitespace-nowrap  text-lg font-bold">
-        {title}
-      </h3>
-    </div>
+    </Link>
   );
 }
 
