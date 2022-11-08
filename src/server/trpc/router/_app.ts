@@ -2,9 +2,11 @@
 import { router } from "../trpc";
 
 import { user } from "./user";
+import { channel } from "./channel";
 
 export const appRouter = router({
   user,
+  channel,
 });
 
 // export type definition of API

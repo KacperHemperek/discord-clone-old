@@ -3,10 +3,13 @@ import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import React from "react";
 import Layout from "../../layouts/layout";
+import { trpc } from "../../utils/trpc";
 
 function Chat() {
   const router = useRouter();
   const chatId = router.query.slug;
+
+  const { data } = trpc.channel.getUsers.useQuery({ id: Number(chatId) });
 
   return <Layout>{chatId}</Layout>;
 }
