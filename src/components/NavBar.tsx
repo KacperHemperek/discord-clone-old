@@ -19,6 +19,7 @@ import {
 } from "react-icons/md";
 import { useOnClickOutside } from "../hooks/useClickOutside";
 import useNav from "../hooks/useNav";
+import { trpc } from "../utils/trpc";
 import AddChatModal from "./AddChatModal";
 import ChanelsList from "./ChanelsList";
 import Overlay from "./Overlay";
@@ -35,6 +36,8 @@ function NavBar() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const { currentUser } = useAuth();
   const router = useRouter();
+  const { data: channels, isLoading } = trpc.channel.getChannels.useQuery();
+  const { data: users } = trpc.channel.getUsers.useQuery({ id: channelId });
 
   const hideMenu = useCallback(() => {
     setShowAccountMenu(false);
@@ -52,49 +55,12 @@ function NavBar() {
   const buttonRef = useRef<null | HTMLButtonElement>(null);
   useOnClickOutside(menuRef, hideMenu, buttonRef);
 
-  const mockChannels: {
-    title: string;
-    id: number;
-    description?: string;
-    users?: User[];
-  }[] = [
-    {
-      title: "Front-end Developers",
-      id: 0,
-    },
-    {
-      title: "Backend",
-      id: 1,
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora et est distinctio, dolores excepturi itaque dolor quisquam magnam possimus laborum!",
-      users: [
-        { name: "Kacper Hemperek", email: "kacper@hemperek.com", id: 1 },
-        { name: "Martyna", email: "martyna@maruda.com", id: 2 },
-        { name: "Aleksander", email: "aleksander@example.com", id: 3 },
-      ],
-    },
-    {
-      title: "Welcome",
-      id: 2,
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora et est distinctio, dolores excepturi itaque ",
-      users: [
-        { name: "Kacper Hemperek", email: "kacper@hemperek.com", id: 1 },
-        {
-          name: "Martyna",
-          email: "martyna@maruda.com",
-          id: 2,
-        },
-      ],
-    },
-  ];
-
   const searchResults = useMemo(() => {
-    return mockChannels.filter((item) => {
+    return channels?.filter((item) => {
       const regex = new RegExp(search.trim(), "gi");
-      return item.title.toLowerCase().match(regex);
+      return item.name.toLowerCase().match(regex);
     });
-  }, [search]);
+  }, [search, channels]);
 
   useEffect(() => {
     setShowAllChannels(false);
@@ -179,13 +145,7 @@ function NavBar() {
                   Members
                 </h2>
                 {/* change hardcoded channels to the channel that is now selected */}
-                <UserList
-                  users={
-                    mockChannels.filter(
-                      (channel) => channel.id === channelId
-                    )[0]?.users ?? []
-                  }
-                />
+                <UserList users={users} />
               </>
             )}
           </div>

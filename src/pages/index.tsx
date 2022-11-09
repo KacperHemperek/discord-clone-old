@@ -37,7 +37,10 @@ export function getServerSideProps(
   }
 
   return {
-    props: {},
+    redirect: {
+      permanent: false,
+      destination: "/2",
+    },
   };
 }
 

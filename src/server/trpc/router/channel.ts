@@ -14,7 +14,7 @@ export const channel = router({
       const { name, desc, userId } = input;
       if (!userId) return;
       try {
-        const res = await prisma?.channel.create({
+        await prisma?.channel.create({
           data: {
             desc,
             name,
@@ -26,9 +26,11 @@ export const channel = router({
       }
     }),
   getUsers: publicProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number().nullable() }))
     .query(async ({ input }) => {
       const { id } = input;
+
+      if (!id) return null;
       const channel = await prisma?.channel.findUnique({
         where: { id },
         include: {
@@ -36,9 +38,17 @@ export const channel = router({
         },
       });
 
-      return channel?.users || null;
+      if (!channel) return null;
+      return channel.users;
     }),
   getChannels: publicProcedure.query(async () => {
-    return await prisma?.channel.findMany();
+    const channels = await prisma?.channel.findMany();
+    console.log(channels);
+    return channels;
   }),
+  addUser: publicProcedure
+    .input(z.object({ userId: z.number(), channelId: z.number() }))
+    .mutation(async ({ input }) => {
+      const { userId, channelId } = input;
+    }),
 });

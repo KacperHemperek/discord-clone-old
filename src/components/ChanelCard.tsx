@@ -3,18 +3,18 @@ import React from "react";
 import useNav from "../hooks/useNav";
 
 export interface ChanelCardProps {
-  title: string;
+  name: string;
   id: number;
   onClick: () => void;
 }
 
 function ChanelCard({
   id,
-  title,
+  name,
   onClick: setShowAllChannels,
 }: ChanelCardProps) {
   function getShort() {
-    return title
+    return name
       .split(" ")
       .map((item, index) => {
         return index < 2 ? item[0] : "";
@@ -32,7 +32,7 @@ function ChanelCard({
           {getShort()}
         </div>
         <h3 className="flex-1 truncate whitespace-nowrap  text-lg font-bold">
-          {title}
+          {name}
         </h3>
       </div>
     </Link>
