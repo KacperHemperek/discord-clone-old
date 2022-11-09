@@ -5,7 +5,6 @@ import type {
 } from "next";
 import cookies from "next-cookies";
 import Head from "next/head";
-import useNav from "../hooks/useNav";
 import Layout from "../layouts/layout";
 
 const Home: NextPage = () => {

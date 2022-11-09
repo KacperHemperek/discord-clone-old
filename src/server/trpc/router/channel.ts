@@ -47,8 +47,25 @@ export const channel = router({
     return channels;
   }),
   addUser: publicProcedure
-    .input(z.object({ userId: z.number(), channelId: z.number() }))
+    .input(
+      z.object({
+        userId: z.number(),
+        channelId: z.number(),
+      })
+    )
     .mutation(async ({ input }) => {
       const { userId, channelId } = input;
+
+      try {
+        const res = await prisma?.channel.update({
+          where: { id: channelId },
+          data: { users: { connect: { id: userId } } },
+          select: { users: true },
+        });
+
+        console.log({ users: res?.users });
+      } catch (err: any) {
+        throw new Error(err);
+      }
     }),
 });

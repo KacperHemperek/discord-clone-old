@@ -29,15 +29,20 @@ import { useAuth } from "./UserProvider";
 
 function NavBar() {
   const { navOpen, setNav, channelId } = useNav();
-  const { logOut } = useAuth();
+  const { logOut, currentUser } = useAuth();
+
+  const router = useRouter();
+
   const [showAllChannels, setShowAllChannels] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const [showAccountMenu, setShowAccountMenu] = useState(false);
-  const { currentUser } = useAuth();
-  const router = useRouter();
-  const { data: channels, isLoading } = trpc.channel.getChannels.useQuery();
-  const { data: users } = trpc.channel.getUsers.useQuery({ id: channelId });
+  const [search, setSearch] = useState("");
+
+  const { data: channels, isLoading: loadingChannels } =
+    trpc.channel.getChannels.useQuery();
+    
+  const { data: users, isLoading: loadingUsers } =
+    trpc.channel.getUsers.useQuery({ id: channelId });
 
   const hideMenu = useCallback(() => {
     setShowAccountMenu(false);
@@ -137,9 +142,7 @@ function NavBar() {
                   Channel Name
                 </h2>
                 <p className="mb-10">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Commodi cumque repellendus repudiandae suscipit dignissimos
-                  porro saepe voluptas ratione quam voluptate.
+                  {channels?.find((channel) => channel.id === channelId)?.desc}
                 </p>
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
                   Members
