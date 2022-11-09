@@ -191,7 +191,7 @@ function NavBar() {
           </div>
           {/* User Account */}
           <div className="flex justify-between bg-brandgray-500 px-10 py-5">
-            <UserCard name={currentUser()?.name || "Guest"} />
+            <UserCard name={currentUser?.name || "Guest"} />
             <div className="relative flex">
               {/* Floating Menu */}
               <div

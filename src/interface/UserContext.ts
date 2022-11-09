@@ -14,5 +14,5 @@ export interface UserContextType {
   emailLogin: ({ email, password }: EmailLoginArgs) => void;
   emailSignUp: ({ email, password, name, confirm }: EmailSignUpArgs) => void;
   logOut: () => void;
-  currentUser: () => User | null | undefined;
+  currentUser: User | null | undefined;
 }
