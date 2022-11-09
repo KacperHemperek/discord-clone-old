@@ -68,4 +68,10 @@ export const channel = router({
         throw new Error(err);
       }
     }),
+  getChannelById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      const { id } = input;
+      return await prisma?.channel.findUnique({ where: { id } });
+    }),
 });
