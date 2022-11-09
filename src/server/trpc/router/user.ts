@@ -18,12 +18,22 @@ export const user = router({
     .input(z.object({ name: z.string(), email: z.string().email() }))
     .mutation(async ({ input }) => {
       console.log({ input });
+      const welcomeChannel = await prisma?.channel.findUnique({
+        where: { name: "Welcome" },
+      });
       const user = await prisma?.user.create({
         data: {
           email: input.email,
           name: input.name,
+          channels: { connect: { id: welcomeChannel?.id } },
+        },
+        select: {
+          name: true,
+          channels: true,
         },
       });
+
+      console.log(user?.channels);
 
       if (user) {
         console.log("user " + user.name + " created succesfully");

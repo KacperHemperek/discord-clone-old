@@ -92,7 +92,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const createContext = React.useCallback((): UserContextType => {
     return { emailLogin, emailSignUp, logOut, currentUser };
-  }, [currentUser, emailLogin, emailSignUp, logOut]);
+  }, [currentUser, emailLogin, emailSignUp, logOut, currentMail]);
 
   return (
     <UserContext.Provider value={createContext()}>

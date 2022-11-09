@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, {
   useCallback,
@@ -40,7 +39,7 @@ function NavBar() {
 
   const { data: channels, isLoading: loadingChannels } =
     trpc.channel.getChannels.useQuery();
-    
+
   const { data: users, isLoading: loadingUsers } =
     trpc.channel.getUsers.useQuery({ id: channelId });
 
@@ -70,6 +69,8 @@ function NavBar() {
   useEffect(() => {
     setShowAllChannels(false);
   }, [router.asPath]);
+
+  const currentChannel = channels?.find((channel) => channel.id === channelId);
 
   const closeButton = (
     <button
@@ -139,11 +140,9 @@ function NavBar() {
             ) : (
               <>
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
-                  Channel Name
+                  {currentChannel?.name}
                 </h2>
-                <p className="mb-10">
-                  {channels?.find((channel) => channel.id === channelId)?.desc}
-                </p>
+                <p className="mb-10">{currentChannel?.desc ?? ""}</p>
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
                   Members
                 </h2>
