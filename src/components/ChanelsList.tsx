@@ -1,16 +1,19 @@
-import { Channel, User } from "@prisma/client";
+import { Channel } from "@prisma/client";
 import React from "react";
-import ChanelCard, { ChanelCardProps } from "./ChanelCard";
+import ChanelCard from "./ChanelCard";
 
 function ChanelsList({
   channels,
   setShowAllChannels,
+  loading,
 }: {
   channels: Channel[] | null | undefined;
   setShowAllChannels: () => void;
+  loading?: boolean;
 }) {
   return (
     <div className="flex flex-col space-y-6">
+      {/* {loading ? (Array(4).map(_ => <))} */}
       {channels?.map((item) => (
         <ChanelCard
           onClick={setShowAllChannels}

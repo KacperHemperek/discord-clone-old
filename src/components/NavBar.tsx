@@ -1,3 +1,4 @@
+import { channel } from "diagnostics_channel";
 import { useRouter } from "next/router";
 import React, {
   useCallback,
@@ -21,14 +22,16 @@ import useNav from "../hooks/useNav";
 import { trpc } from "../utils/trpc";
 import AddChatModal from "./AddChatModal";
 import ChanelsList from "./ChanelsList";
+import ChannelDescriptionSceleton from "./ChannelDescription/ChannelDescriptionSceleton";
 import Overlay from "./Overlay";
-import UserCard from "./UserCard";
+import UserCard from "./UserCard/UserCard";
+import UserCardSkeleton from "./UserCard/UserCardSkeleton";
 import UserList from "./UserList";
 import { useAuth } from "./UserProvider";
 
 function NavBar() {
   const { navOpen, setNav, channelId } = useNav();
-  const { logOut, currentUser } = useAuth();
+  const { logOut, currentUser, loadingUser } = useAuth();
 
   const router = useRouter();
 
@@ -132,9 +135,11 @@ function NavBar() {
                   />
                 </div>
                 {/* Chat List */}
+
                 <ChanelsList
                   setShowAllChannels={() => setShowAllChannels(false)}
                   channels={searchResults}
+                  loading={loadingChannels}
                 />
               </>
             ) : (
@@ -142,18 +147,26 @@ function NavBar() {
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
                   {currentChannel?.name}
                 </h2>
-                <p className="mb-10">{currentChannel?.desc ?? ""}</p>
+                {loadingChannels ? (
+                  <ChannelDescriptionSceleton />
+                ) : (
+                  <p className="mb-10">{currentChannel?.desc ?? ""}</p>
+                )}
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
                   Members
                 </h2>
                 {/* change hardcoded channels to the channel that is now selected */}
-                <UserList users={users} />
+                <UserList loading={loadingUsers} users={users} />
               </>
             )}
           </div>
           {/* User Account */}
           <div className="flex justify-between bg-brandgray-500 px-10 py-5">
-            <UserCard name={currentUser?.name || "Guest"} />
+            {loadingUser || !currentUser ? (
+              <UserCardSkeleton />
+            ) : (
+              <UserCard name={currentUser?.name || "Guest"} />
+            )}
             <div className="relative flex">
               {/* Floating Menu */}
               <div

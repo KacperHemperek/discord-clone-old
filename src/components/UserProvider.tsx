@@ -21,6 +21,7 @@ const UserContext = React.createContext<UserContextType>({
   emailSignUp: ({}: EmailSignUpArgs) => {},
   logOut: () => {},
   currentUser: null,
+  loadingUser: false,
 });
 
 export function useAuth() {
@@ -32,9 +33,10 @@ const firebaseCookie = "firebaseToken";
 function UserProvider({ children }: { children: React.ReactNode }) {
   const { mutate: createUser } = trpc.user.createUser.useMutation();
   const [currentMail, setCurrentMail] = useState<string | null>(null);
-  const { data: currentUser } = trpc.user.getUserByEmail.useQuery({
-    email: currentMail,
-  });
+  const { data: currentUser, isLoading: loadingUser } =
+    trpc.user.getUserByEmail.useQuery({
+      email: currentMail,
+    });
 
   const router = useRouter();
 
@@ -91,7 +93,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const createContext = React.useCallback((): UserContextType => {
-    return { emailLogin, emailSignUp, logOut, currentUser };
+    return { emailLogin, emailSignUp, logOut, currentUser, loadingUser };
   }, [currentUser, emailLogin, emailSignUp, logOut, currentMail]);
 
   return (
