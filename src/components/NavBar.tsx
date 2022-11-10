@@ -24,6 +24,8 @@ import AddChatModal from "./AddChatModal";
 import ChanelsList from "./ChanelsList";
 import ChannelDescriptionSceleton from "./ChannelDescription/ChannelDescriptionSceleton";
 import Overlay from "./Overlay";
+import Title from "./Title/Title";
+import TitleSceleton from "./Title/TitleSceleton";
 import UserCard from "./UserCard/UserCard";
 import UserCardSkeleton from "./UserCard/UserCardSkeleton";
 import UserList from "./UserList";
@@ -144,14 +146,21 @@ function NavBar() {
               </>
             ) : (
               <>
-                <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
-                  {currentChannel?.name}
-                </h2>
                 {loadingChannels ? (
-                  <ChannelDescriptionSceleton />
+                  <>
+                    <TitleSceleton className="mb-5" />
+                    <ChannelDescriptionSceleton />
+                  </>
                 ) : (
-                  <p className="mb-10">{currentChannel?.desc ?? ""}</p>
+                  <>
+                    <Title
+                      title={currentChannel?.name ?? ""}
+                      className="mb-5"
+                    />
+                    <p className="mb-10">{currentChannel?.desc}</p>
+                  </>
                 )}
+
                 <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
                   Members
                 </h2>

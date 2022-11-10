@@ -13,7 +13,7 @@ function UserList({
   return (
     <div className="flex flex-col space-y-6">
       {loading
-        ? [...Array(4)].map((_) => <UserCardSkeleton />)
+        ? [...Array(4)].map((_, idx) => <UserCardSkeleton key={idx} />)
         : users?.map((user) => (
             <UserCard name={user.name} key={user.name + user.id} />
           ))}
