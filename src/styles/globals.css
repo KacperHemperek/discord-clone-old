@@ -14,4 +14,11 @@
   .input {
     @apply mb-8 w-full rounded-lg bg-brandgray-200 px-4 py-3 text-lg outline-brandblue placeholder:text-brandgray-100;
   }
+
+  .custom-scroll::-webkit-scrollbar {
+    @apply w-[5px] bg-transparent;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb {
+    @apply rounded-md bg-brandgray-200 px-[1px];
+  }
 }

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import Avatar from "../Avatar";
 
 function UserCard({
   name,
@@ -10,9 +11,7 @@ function UserCard({
 }) {
   return (
     <div className=" flex items-center">
-      <div className="relative mr-4 h-10 w-10 overflow-hidden rounded-md">
-        <Image src={avatar} alt={"avatar image"} layout={"fill"} />
-      </div>
+      <Avatar avatar={avatar} />
       <p className="truncate whitespace-nowrap font-bold text-brandgray-100">
         {name}
       </p>

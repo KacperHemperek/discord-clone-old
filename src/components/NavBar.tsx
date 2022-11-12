@@ -174,7 +174,7 @@ function NavBar() {
             {loadingUser || !currentUser ? (
               <UserCardSkeleton />
             ) : (
-              <UserCard name={currentUser?.name || "Guest"} />
+              <UserCard name={currentUser?.name || "Guest"}  />
             )}
             <div className="relative flex">
               {/* Floating Menu */}

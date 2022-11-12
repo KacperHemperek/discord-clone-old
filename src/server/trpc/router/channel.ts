@@ -74,4 +74,38 @@ export const channel = router({
       const { id } = input;
       return await prisma?.channel.findUnique({ where: { id } });
     }),
+  getMessages: publicProcedure
+    .input(z.object({ channelId: z.number() }))
+    .query(async ({ input }) => {
+      const { channelId } = input;
+      const messages = await prisma?.message.findMany({
+        where: { channelId },
+        select: { user: true, body: true, createdAt: true, id: true },
+      });
+
+      return messages;
+    }),
+  sendMessage: publicProcedure
+    .input(
+      z.object({
+        message: z.string(),
+        channelId: z.number(),
+        userId: z.number().nullable(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { message, channelId, userId } = input;
+
+      if (!userId) throw new Error(`User id must be provided`);
+
+      const newMessage = await prisma?.message.create({
+        data: {
+          body: message,
+          channel: { connect: { id: channelId } },
+          user: { connect: { id: userId } },
+        },
+      });
+
+      console.log(newMessage);
+    }),
 });
