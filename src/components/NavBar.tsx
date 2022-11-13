@@ -150,6 +150,7 @@ function NavBar() {
                   <>
                     <TitleSceleton className="mb-5" />
                     <ChannelDescriptionSceleton />
+                    <TitleSceleton className="mb-5 w-32" />
                   </>
                 ) : (
                   <>
@@ -158,12 +159,10 @@ function NavBar() {
                       className="mb-5"
                     />
                     <p className="mb-10">{currentChannel?.desc}</p>
+                    <Title title="Members" className="mb-5" />
                   </>
                 )}
 
-                <h2 className="mb-5 text-lg font-bold uppercase text-brandwhite">
-                  Members
-                </h2>
                 {/* change hardcoded channels to the channel that is now selected */}
                 <UserList loading={loadingUsers} users={users} />
               </>
@@ -174,7 +173,7 @@ function NavBar() {
             {loadingUser || !currentUser ? (
               <UserCardSkeleton />
             ) : (
-              <UserCard name={currentUser?.name || "Guest"}  />
+              <UserCard name={currentUser?.name || "Guest"} />
             )}
             <div className="relative flex">
               {/* Floating Menu */}
