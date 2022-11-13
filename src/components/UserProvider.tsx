@@ -17,8 +17,11 @@ import { useRouter } from "next/router";
 import { trpc } from "../utils/trpc";
 
 const UserContext = React.createContext<UserContextType>({
+  /* tslint:disable:no-empty */
   emailLogin: ({}: EmailLoginArgs) => {},
+  /* tslint:disable:no-empty */
   emailSignUp: ({}: EmailSignUpArgs) => {},
+  /* tslint:disable:no-empty */
   logOut: () => {},
   currentUser: null,
   loadingUser: false,

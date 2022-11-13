@@ -10,8 +10,10 @@ interface InitialNavContextType {
 
 const initialNavContext: InitialNavContextType = {
   navOpen: false,
+  /* tslint:disable:no-empty */
   setNav: (value: boolean) => {},
   channelId: null,
+  /* tslint:disable:no-empty */
   setChannelId: (value: number) => {},
 };
 
