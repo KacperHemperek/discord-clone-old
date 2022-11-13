@@ -19,12 +19,9 @@ function ChatRoom() {
   const { mutate: addUser } = trpc.channel.addUser.useMutation();
   const { mutate: sendMessage } = trpc.channel.sendMessage.useMutation();
   const { data: messages, isLoading: loadingMessages } =
-    trpc.channel.getMessages.useQuery(
-      {
-        channelId: Number(chatId),
-      },
-      { refetchInterval: 10000 }
-    );
+    trpc.channel.getMessages.useQuery({
+      channelId: Number(chatId),
+    });
 
   function handleSendMessage(e: React.FormEvent) {
     e.preventDefault();

@@ -10,7 +10,7 @@ type MessageProps = {
   createdAt: Date;
 };
 
-function Message({ body, createdAt, id, user }: MessageProps) {
+function Message({ body, createdAt, user }: MessageProps) {
   const date = getDaysAgo(createdAt);
 
   return (
