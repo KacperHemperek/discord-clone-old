@@ -3,14 +3,13 @@ import cookies from "next-cookies";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useAuth } from "../components/UserProvider";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 function Login() {
   const { emailLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     toast.promise(async () => emailLogin({ email, password }), {
@@ -44,7 +43,7 @@ function Login() {
 
         <Link href="/register">
           <p className="mb-8 cursor-pointer hover:underline">
-            Don't have an account yet? Register!
+            Don&apos;t have an account yet? Register!
           </p>
         </Link>
         <button className="btn self-end">Log in</button>
