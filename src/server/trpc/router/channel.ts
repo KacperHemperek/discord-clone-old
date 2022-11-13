@@ -43,7 +43,6 @@ export const channel = router({
     }),
   getChannels: publicProcedure.query(async () => {
     const channels = await prisma?.channel.findMany();
-    console.log(channels);
     return channels;
   }),
   addUser: publicProcedure
@@ -62,8 +61,6 @@ export const channel = router({
           data: { users: { connect: { id: userId } } },
           select: { users: true },
         });
-
-        console.log({ users: res?.users });
       } catch (err: any) {
         throw new Error(err);
       }
@@ -81,8 +78,9 @@ export const channel = router({
       const messages = await prisma?.message.findMany({
         where: { channelId },
         select: { user: true, body: true, createdAt: true, id: true },
+        orderBy: { createdAt: "desc" },
       });
-
+      console.log(messages);
       return messages;
     }),
   sendMessage: publicProcedure
@@ -97,6 +95,7 @@ export const channel = router({
       const { message, channelId, userId } = input;
 
       if (!userId) throw new Error(`User id must be provided`);
+      console.log("sending message");
 
       const newMessage = await prisma?.message.create({
         data: {
