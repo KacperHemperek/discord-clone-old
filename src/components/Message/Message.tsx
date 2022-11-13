@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import React from "react";
 import Avatar from "../Avatar";
+import { getDaysAgo } from "../../helpers/date";
 
 type MessageProps = {
   user: User;
@@ -10,6 +11,8 @@ type MessageProps = {
 };
 
 function Message({ body, createdAt, id, user }: MessageProps) {
+  const date = getDaysAgo(createdAt);
+
   return (
     <div className="my-4 flex w-full">
       <div>
@@ -18,9 +21,7 @@ function Message({ body, createdAt, id, user }: MessageProps) {
       <div className=" flex-grow ">
         <div className="mb-1 flex items-center space-x-8 text-brandgray-100">
           <h5 className=" font-bold md:text-lg">{user?.name}</h5>
-          <p className="text-xs font-medium md:text-sm">
-            {"yesterday at 14:50"}
-          </p>
+          <p className="text-xs font-medium md:text-sm">{date}</p>
         </div>
         <p className="text-lg font-medium">{body}</p>
       </div>
