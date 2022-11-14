@@ -21,14 +21,15 @@ import useNav from "../hooks/useNav";
 import { trpc } from "../utils/trpc";
 import AddChatModal from "./AddChatModal";
 import ChanelsList from "./ChanelsList";
-import ChannelDescriptionSceleton from "./ChannelDescription/ChannelDescriptionSceleton";
+import ChannelDescriptionSceleton from "./Sceletons/ChannelDescriptionSceleton";
 import Overlay from "./Overlay";
 import Title from "./Title/Title";
 import TitleSceleton from "./Title/TitleSceleton";
 import UserCard from "./UserCard/UserCard";
 import UserCardSkeleton from "./UserCard/UserCardSkeleton";
 import UserList from "./UserList";
-import { useAuth } from "./UserProvider";
+import useAuth from "../hooks/useAuth";
+
 
 function NavBar() {
   const { navOpen, setNav, channelId } = useNav();

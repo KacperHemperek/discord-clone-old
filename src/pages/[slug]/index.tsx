@@ -3,8 +3,9 @@ import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { MdSend } from "react-icons/md";
-import Chat from "../../components/Chat/Chat";
-import { useAuth } from "../../components/UserProvider";
+import Chat from "../../components/Chat";
+import useAuth from "../../hooks/useAuth";
+
 import Layout from "../../layouts/layout";
 import { trpc } from "../../utils/trpc";
 

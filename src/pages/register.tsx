@@ -3,7 +3,8 @@ import cookies from "next-cookies";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { useAuth } from "../components/UserProvider";
+import useAuth from "../hooks/useAuth";
+
 
 function Login() {
   const { emailSignUp } = useAuth();

@@ -2,8 +2,9 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import cookies from "next-cookies";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useAuth } from "../components/UserProvider";
+
 import { toast } from "react-toastify";
+import useAuth from "../hooks/useAuth";
 
 function Login() {
   const { emailLogin } = useAuth();

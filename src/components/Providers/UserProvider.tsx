@@ -3,33 +3,36 @@ import {
   EmailLoginArgs,
   EmailSignUpArgs,
   UserContextType,
-} from "../interface/UserContext";
+} from "../../interface/UserContext";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   User,
 } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth } from "../../utils/firebase";
 
 import cookie from "js-cookie";
 import { useRouter } from "next/router";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../../utils/trpc";
+import { noop } from "../../helpers/noop";
 
-const UserContext = React.createContext<UserContextType>({
+export const UserContext = React.createContext<UserContextType>({
   /* tslint:disable:no-empty */
-  emailLogin: ({}: EmailLoginArgs) => {},
+  emailLogin: ({}: EmailLoginArgs) => {
+    noop();
+  },
   /* tslint:disable:no-empty */
-  emailSignUp: ({}: EmailSignUpArgs) => {},
+  emailSignUp: ({}: EmailSignUpArgs) => {
+    noop();
+  },
   /* tslint:disable:no-empty */
-  logOut: () => {},
+  logOut: () => {
+    noop();
+  },
   currentUser: null,
   loadingUser: false,
 });
-
-export function useAuth() {
-  return React.useContext(UserContext);
-}
 
 const firebaseCookie = "firebaseToken";
 

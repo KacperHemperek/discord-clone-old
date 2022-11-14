@@ -2,11 +2,11 @@
 import "../styles/globals.css";
 import type { AppType } from "next/app";
 import { trpc } from "../utils/trpc";
-import UserProvider from "../components/UserProvider";
+import UserProvider from "../components/Providers/UserProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
-import NavProvider from "../components/NavProvider";
+import NavProvider from "../components/Providers/NavProvider";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
