@@ -7,7 +7,9 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
-
+  PUSHER_KEY: z.string(),
+  PUSHER_APP_ID: z.string(),
+  PUSHER_SECRET: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
 });
 
