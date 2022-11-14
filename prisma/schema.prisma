@@ -37,6 +37,6 @@ model Channel {
   id       Int       @id @unique() @default(autoincrement())
   messages Message[]
   name     String    @unique()
-  desc     String
+  desc     String    @db.VarChar(1000)
   users    User[]
 }
