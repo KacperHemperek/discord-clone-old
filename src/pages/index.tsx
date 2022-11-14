@@ -9,6 +9,7 @@ import Head from "next/head";
 
 import Layout from "@layouts/layout";
 import { Redirect } from "next/dist/lib/load-custom-routes";
+import { getWelcomeChannel } from "@server/services/getWelcomeChannel";
 
 const Home: NextPage = () => {
   return (
@@ -24,10 +25,12 @@ const Home: NextPage = () => {
   );
 };
 
-export function getServerSideProps(
+export async function getServerSideProps(
   ctx: GetServerSidePropsContext
-): InferGetServerSidePropsType<any> {
+): Promise<InferGetServerSidePropsType<any>> {
   const cookie = cookies(ctx);
+
+  const welcomeChannelId = await getWelcomeChannel();
 
   if (!cookie.firebaseToken) {
     return {
@@ -41,7 +44,7 @@ export function getServerSideProps(
   return {
     redirect: {
       permanent: false,
-      destination: "/2",
+      destination: `/${welcomeChannelId}`,
     },
   };
 }
