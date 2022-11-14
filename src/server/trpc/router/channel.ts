@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { publicProcedure, router } from "@server/trpc/trpc";
 
 export const channel = router({
   createChannel: publicProcedure
@@ -14,7 +14,6 @@ export const channel = router({
       const { name, desc, userId } = input;
       if (!userId) return;
       try {
-
         await prisma?.channel.create({
           data: {
             desc,
@@ -22,7 +21,6 @@ export const channel = router({
             users: { connect: { id: userId } },
           },
         });
-      
       } catch (error: any) {
         throw new Error(error);
       }

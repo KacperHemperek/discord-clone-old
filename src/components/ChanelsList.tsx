@@ -1,6 +1,8 @@
-import { Channel } from "@prisma/client";
 import React from "react";
-import ChanelCard from "./ChanelCard";
+
+import { Channel } from "@prisma/client";
+
+import ChanelCard from "@components/ChanelCard";
 
 function ChanelsList({
   channels,

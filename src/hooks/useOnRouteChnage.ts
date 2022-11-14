@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 function useOnRouteChnage(
   handler: ((...args: any) => void) | ((...args: any) => any)

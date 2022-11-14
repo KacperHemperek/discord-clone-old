@@ -1,12 +1,14 @@
-// src/pages/_app.tsx
-import "../styles/globals.css";
-import type { AppType } from "next/app";
-import { trpc } from "../utils/trpc";
-import UserProvider from "../components/Providers/UserProvider";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import React from "react";
-import NavProvider from "../components/Providers/NavProvider";
+import type { AppType } from "next/app";
+
+import { ToastContainer } from "react-toastify";
+
+import { trpc } from "@utils/trpc";
+import UserProvider from "@components/Providers/UserProvider";
+import NavProvider from "@components/Providers/NavProvider";
+
+import "../styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (

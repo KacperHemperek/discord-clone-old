@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import useNav from "../hooks/useNav";
 
 export interface ChanelCardProps {
   name: string;

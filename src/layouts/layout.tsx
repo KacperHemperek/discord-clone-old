@@ -1,9 +1,11 @@
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
+
 import { MdMenu } from "react-icons/md";
-import NavBar from "../components/NavBar";
-import useNav from "../hooks/useNav";
-import { trpc } from "../utils/trpc";
+
+import NavBar from "@components/NavBar";
+import useNav from "@hooks/useNav";
+import { trpc } from "@utils/trpc";
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { setNav } = useNav();

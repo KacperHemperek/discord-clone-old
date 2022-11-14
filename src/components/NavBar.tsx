@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React, {
   useCallback,
   useEffect,
@@ -6,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useRouter } from "next/router";
 
 import {
   MdClose,
@@ -16,20 +16,20 @@ import {
   MdAccountCircle,
   MdLogout,
 } from "react-icons/md";
-import { useOnClickOutside } from "../hooks/useClickOutside";
-import useNav from "../hooks/useNav";
-import { trpc } from "../utils/trpc";
-import AddChatModal from "./AddChatModal";
-import ChanelsList from "./ChanelsList";
-import ChannelDescriptionSceleton from "./Sceletons/ChannelDescriptionSceleton";
-import Overlay from "./Overlay";
-import Title from "./Title/Title";
-import TitleSceleton from "./Title/TitleSceleton";
-import UserCard from "./UserCard/UserCard";
-import UserCardSkeleton from "./UserCard/UserCardSkeleton";
-import UserList from "./UserList";
-import useAuth from "../hooks/useAuth";
 
+import useNav from "@hooks/useNav";
+import useAuth from "@hooks/useAuth";
+import useOnClickOutside from "@hooks/useClickOutside";
+import { trpc } from "@utils/trpc";
+import ChanelsList from "@components/ChanelsList";
+import AddChatModal from "@components/AddChatModal";
+import ChannelDescriptionSceleton from "@components/Sceletons/ChannelDescriptionSceleton";
+import Overlay from "@components/Overlay";
+import Title from "@components/Title";
+import TitleSceleton from "@components/Sceletons/TitleSceleton";
+import UserCard from "@components/UserCard";
+import UserCardSkeleton from "@components/Sceletons/UserCardSkeleton";
+import UserList from "@components/UserList";
 
 function NavBar() {
   const { navOpen, setNav, channelId } = useNav();

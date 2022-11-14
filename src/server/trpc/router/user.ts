@@ -1,5 +1,6 @@
-import { router, publicProcedure } from "../trpc";
 import { z } from "zod";
+
+import { router, publicProcedure } from "@server/trpc/trpc";
 
 export const user = router({
   getUserByEmail: publicProcedure

@@ -1,8 +1,10 @@
-import { Message, User } from "@prisma/client";
 import React, { useEffect, useRef } from "react";
-import MessageComponent from "./Message";
-import MessageSceleton from "./Sceletons/MessageSceleton";
+
+import { User } from "@prisma/client";
 import autoAnimate from "@formkit/auto-animate";
+
+import MessageComponent from "@components/Message";
+import MessageSceleton from "@components/Sceletons/MessageSceleton";
 
 type ChatProps = {
   messages:

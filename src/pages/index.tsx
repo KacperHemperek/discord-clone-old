@@ -3,9 +3,11 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+
 import cookies from "next-cookies";
 import Head from "next/head";
-import Layout from "../layouts/layout";
+
+import Layout from "@layouts/layout";
 
 const Home: NextPage = () => {
   return (

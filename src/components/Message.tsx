@@ -1,7 +1,9 @@
-import { User } from "@prisma/client";
 import React from "react";
-import Avatar from "./Avatar";
-import { getDaysAgo } from "../helpers/date";
+
+import { User } from "@prisma/client";
+
+import Avatar from "@components/Avatar";
+import { getDaysAgo } from "@helpers/date";
 
 type MessageProps = {
   user: User;

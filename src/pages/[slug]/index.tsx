@@ -1,13 +1,14 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import cookies from "next-cookies";
-import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { MdSend } from "react-icons/md";
-import Chat from "../../components/Chat";
-import useAuth from "../../hooks/useAuth";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
+import cookies from "next-cookies";
 
-import Layout from "../../layouts/layout";
-import { trpc } from "../../utils/trpc";
+import { MdSend } from "react-icons/md";
+
+import Chat from "@components/Chat";
+import useAuth from "@hooks/useAuth";
+import Layout from "@layouts/layout";
+import { trpc } from "@utils/trpc";
 
 function ChatRoom() {
   const router = useRouter();

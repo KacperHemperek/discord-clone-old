@@ -1,7 +1,7 @@
-import React, { ReactFragment, useState } from "react";
-import useAuth from "../hooks/useAuth";
-import { trpc } from "../utils/trpc";
+import React, { useState } from "react";
 
+import useAuth from "@hooks/useAuth";
+import { trpc } from "@utils/trpc";
 
 function AddChatModal() {
   const [channelName, setChannelName] = useState("");

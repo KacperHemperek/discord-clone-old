@@ -1,7 +1,9 @@
-import { User } from "@prisma/client";
 import React from "react";
-import UserCard from "./UserCard/UserCard";
-import UserCardSkeleton from "./UserCard/UserCardSkeleton";
+
+import { User } from "@prisma/client";
+
+import UserCard from "@components/UserCard";
+import UserCardSkeleton from "@components/Sceletons/UserCardSkeleton";
 
 function UserList({
   users,

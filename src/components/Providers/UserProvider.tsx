@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
+import cookie from "js-cookie";
+import { useRouter } from "next/router";
+
 import {
   EmailLoginArgs,
   EmailSignUpArgs,
   UserContextType,
-} from "../../interface/UserContext";
+} from "@interface/UserContext";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   User,
 } from "firebase/auth";
-import { auth } from "../../utils/firebase";
-
-import cookie from "js-cookie";
-import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
-import { noop } from "../../helpers/noop";
+import { auth } from "@utils/firebase";
+import { trpc } from "@utils/trpc";
+import { noop } from "@helpers/noop";
 
 export const UserContext = React.createContext<UserContextType>({
   /* tslint:disable:no-empty */

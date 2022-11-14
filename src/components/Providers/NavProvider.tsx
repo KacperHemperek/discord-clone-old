@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 interface InitialNavContextType {
   navOpen: boolean;

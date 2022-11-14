@@ -1,10 +1,11 @@
+import React, { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import cookies from "next-cookies";
 import Link from "next/link";
-import React, { useState } from "react";
-import { toast } from "react-toastify";
-import useAuth from "../hooks/useAuth";
 
+import { toast } from "react-toastify";
+
+import useAuth from "@hooks/useAuth";
 
 function Login() {
   const { emailSignUp } = useAuth();
