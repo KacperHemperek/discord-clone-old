@@ -33,6 +33,8 @@ function ChatRoom() {
       message,
       userId: currentUser?.id ?? null,
     });
+
+    setMessage("");
   }
 
   useEffect(() => {
