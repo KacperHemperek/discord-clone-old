@@ -1,4 +1,3 @@
-import { channel } from "diagnostics_channel";
 import { useRouter } from "next/router";
 import React, {
   useCallback,

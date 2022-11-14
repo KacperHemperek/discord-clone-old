@@ -14,6 +14,7 @@ export const channel = router({
       const { name, desc, userId } = input;
       if (!userId) return;
       try {
+
         await prisma?.channel.create({
           data: {
             desc,
@@ -21,6 +22,7 @@ export const channel = router({
             users: { connect: { id: userId } },
           },
         });
+      
       } catch (error: any) {
         throw new Error(error);
       }
@@ -56,10 +58,9 @@ export const channel = router({
       const { userId, channelId } = input;
 
       try {
-        const res = await prisma?.channel.update({
+        await prisma?.channel.update({
           where: { id: channelId },
           data: { users: { connect: { id: userId } } },
-          select: { users: true },
         });
       } catch (err: any) {
         throw new Error(err);
@@ -75,11 +76,13 @@ export const channel = router({
     .input(z.object({ channelId: z.number() }))
     .query(async ({ input }) => {
       const { channelId } = input;
+
       const messages = await prisma?.message.findMany({
         where: { channelId },
         select: { user: true, body: true, createdAt: true, id: true },
         orderBy: { createdAt: "desc" },
       });
+
       console.log(messages);
       return messages;
     }),
