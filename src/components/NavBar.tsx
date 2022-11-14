@@ -54,7 +54,7 @@ function NavBar() {
 
   const closeNav = useCallback(() => {
     setNav(false);
-  }, []);
+  }, [setNav]);
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
@@ -141,7 +141,6 @@ function NavBar() {
                 <ChanelsList
                   setShowAllChannels={() => setShowAllChannels(false)}
                   channels={searchResults}
-                  loading={loadingChannels}
                 />
               </>
             ) : (

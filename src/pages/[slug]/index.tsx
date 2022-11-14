@@ -49,7 +49,7 @@ function ChatRoom() {
       userId: currentUser.id,
     });
     console.log("Adding " + currentUser.name + " to channel");
-  }, [currentUser, chatId, chatRef.current]);
+  }, [currentUser, chatId, chatRef.current, addUser, data, loadingUser]);
 
   return (
     <Layout>

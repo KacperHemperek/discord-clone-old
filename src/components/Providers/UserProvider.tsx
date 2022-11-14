@@ -18,15 +18,12 @@ import { trpc } from "@utils/trpc";
 import { noop } from "@helpers/noop";
 
 export const UserContext = React.createContext<UserContextType>({
-  /* tslint:disable:no-empty */
-  emailLogin: ({}: EmailLoginArgs) => {
+  emailLogin: () => {
     noop();
   },
-  /* tslint:disable:no-empty */
-  emailSignUp: ({}: EmailSignUpArgs) => {
+  emailSignUp: () => {
     noop();
   },
-  /* tslint:disable:no-empty */
   logOut: () => {
     noop();
   },
@@ -100,7 +97,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const createContext = React.useCallback((): UserContextType => {
     return { emailLogin, emailSignUp, logOut, currentUser, loadingUser };
-  }, [currentUser, emailLogin, emailSignUp, logOut, currentMail]);
+  }, [currentUser, emailLogin, emailSignUp, logOut, currentMail, loadingUser]);
 
   return (
     <UserContext.Provider value={createContext()}>

@@ -7,18 +7,18 @@ interface InitialNavContextType {
   navOpen: boolean;
   setNav: (...args: any) => void;
   channelId: number | null;
-  setChannelId: (value: number) => void;
+  setChannelId: (...args: any) => void;
 }
 
 const initialNavContext: InitialNavContextType = {
   navOpen: false,
   /* tslint:disable:no-empty */
-  setNav: (value: boolean) => {
+  setNav: () => {
     noop();
   },
   channelId: null,
   /* tslint:disable:no-empty */
-  setChannelId: (value: number) => {
+  setChannelId: () => {
     noop();
   },
 };
@@ -38,7 +38,7 @@ const NavProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       setChannelId(null);
     }
-  }, [router.asPath]);
+  }, [router.query.slug]);
 
   return (
     <NavContext.Provider

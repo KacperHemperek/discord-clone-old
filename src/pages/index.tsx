@@ -8,6 +8,7 @@ import cookies from "next-cookies";
 import Head from "next/head";
 
 import Layout from "@layouts/layout";
+import { Redirect } from "next/dist/lib/load-custom-routes";
 
 const Home: NextPage = () => {
   return (
