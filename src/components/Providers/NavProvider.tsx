@@ -1,6 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
+import { noop } from "@helpers/noop";
+
 interface InitialNavContextType {
   navOpen: boolean;
   setNav: (...args: any) => void;
@@ -11,10 +13,14 @@ interface InitialNavContextType {
 const initialNavContext: InitialNavContextType = {
   navOpen: false,
   /* tslint:disable:no-empty */
-  setNav: (value: boolean) => {},
+  setNav: (value: boolean) => {
+    noop();
+  },
   channelId: null,
   /* tslint:disable:no-empty */
-  setChannelId: (value: number) => {},
+  setChannelId: (value: number) => {
+    noop();
+  },
 };
 
 export const NavContext =
