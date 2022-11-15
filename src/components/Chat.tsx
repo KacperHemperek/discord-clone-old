@@ -5,6 +5,8 @@ import autoAnimate from "@formkit/auto-animate";
 
 import MessageComponent from "@components/Message";
 import MessageSceleton from "@components/Sceletons/MessageSceleton";
+import useNav from "@hooks/useNav";
+import { CHANNEL_NAME, pusherClient } from "@utils/pusherClient";
 
 type ChatProps = {
   messages:

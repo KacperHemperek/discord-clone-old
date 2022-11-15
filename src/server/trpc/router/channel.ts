@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { publicProcedure, router } from "@server/trpc/trpc";
+import { pusherServer } from "@server/helpers/pusher";
 
 export const channel = router({
   createChannel: publicProcedure
@@ -103,13 +104,25 @@ export const channel = router({
 
       if (!userId) throw new Error(`User id must be provided`);
       console.log("sending message");
+      try {
+        const newMessage = await prisma?.message.create({
+          data: {
+            body: message,
+            channel: { connect: { id: channelId } },
+            user: { connect: { id: userId } },
+          },
+        });
 
-      const newMessage = await prisma?.message.create({
-        data: {
-          body: message,
-          channel: { connect: { id: channelId } },
-          user: { connect: { id: userId } },
-        },
-      });
+        if (newMessage) {
+          await pusherServer.trigger(
+            "chat-connection",
+            "chat-message",
+            { id: channelId}
+          );
+        }
+      } catch (err) {
+        console.log(err);
+        throw new Error("Couldn't send message");
+      }
     }),
 });

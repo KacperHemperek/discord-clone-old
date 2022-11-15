@@ -9,6 +9,8 @@ import Chat from "@components/Chat";
 import useAuth from "@hooks/useAuth";
 import Layout from "@layouts/layout";
 import { trpc } from "@utils/trpc";
+import { CHANNEL_NAME, pusherClient } from "@utils/pusherClient";
+import { Message, User } from "@prisma/client";
 
 function ChatRoom() {
   const router = useRouter();
@@ -19,23 +21,31 @@ function ChatRoom() {
 
   const { data } = trpc.channel.getUsers.useQuery({ id: Number(chatId) });
   const { mutate: addUser } = trpc.channel.addUser.useMutation();
-  const { mutate: sendMessage } = trpc.channel.sendMessage.useMutation();
-  const { data: messages, isLoading: loadingMessages } =
-    trpc.channel.getMessages.useQuery({
-      channelId: Number(chatId),
-    });
+  const { mutate: sendMessage, isLoading } =
+    trpc.channel.sendMessage.useMutation();
+  const {
+    data: messages,
+    isLoading: loadingMessages,
+    refetch: updateMessages,
+    
+  } = trpc.channel.getMessages.useQuery({
+    channelId: Number(chatId),
+  });
 
-  function handleSendMessage(e: React.FormEvent) {
+  async function handleSendMessage(e: React.FormEvent) {
     e.preventDefault();
     if (message.trim() === "") return;
     if (!currentUser?.id) return;
-
-    sendMessage({
-      channelId: Number(chatId),
-      message,
-      userId: currentUser?.id ?? null,
-    });
-
+    try {
+      const data = await sendMessage({
+        channelId: Number(chatId),
+        message,
+        userId: currentUser?.id ?? null,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new Error("sending message failed");
+    }
     setMessage("");
   }
 
@@ -49,7 +59,36 @@ function ChatRoom() {
       userId: currentUser.id,
     });
     console.log("Adding " + currentUser.name + " to channel");
-  }, [currentUser, chatId, chatRef.current, addUser, data, loadingUser]);
+  }, [currentUser, chatId, chatRef.current, data, loadingUser, messages]);
+
+  useEffect(() => {
+    const channel = pusherClient.subscribe("chat-connection");
+    console.log(channel);
+    channel.bind("pusher:subscription_succeeded", (data: any) => {
+      console.log("subscribed to pusher");
+    });
+
+    channel.bind(
+      "chat-message",
+      ({
+        id,
+        message,
+      }: {
+        id: number;
+        message: {
+          user: User;
+          id: number;
+          body: string;
+          createdAt: Date;
+        };
+      }) => {
+        console.log(message);
+        if (String(id) === chatId) {
+          updateMessages();
+        }
+      }
+    );
+  }, []);
 
   return (
     <Layout>
