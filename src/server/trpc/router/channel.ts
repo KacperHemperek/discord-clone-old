@@ -88,7 +88,6 @@ export const channel = router({
         orderBy: { createdAt: "desc" },
       });
 
-      console.log(messages);
       return messages;
     }),
   sendMessage: publicProcedure
@@ -112,7 +111,5 @@ export const channel = router({
           user: { connect: { id: userId } },
         },
       });
-
-      console.log(newMessage);
     }),
 });

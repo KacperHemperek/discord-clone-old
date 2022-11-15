@@ -33,11 +33,10 @@ export const user = router({
           channels: true,
         },
       });
-
-      console.log(user?.channels);
-
-      if (user) {
-        console.log("user " + user.name + " created succesfully");
+      if (!user) {
+        throw new Error("There was an error creating user");
       }
+
+      console.log("user " + user.name + " created succesfully");
     }),
 });
