@@ -30,7 +30,7 @@ export async function getServerSideProps(
 ): Promise<InferGetServerSidePropsType<any>> {
   const cookie = cookies(ctx);
 
-  const welcomeChannelId = await getWelcomeChannel();
+  // const welcomeChannelId = await getWelcomeChannel();
 
   if (!cookie.firebaseToken) {
     return {
@@ -44,7 +44,7 @@ export async function getServerSideProps(
   return {
     redirect: {
       permanent: false,
-      destination: `/${welcomeChannelId}`,
+      destination: `/1`,
     },
   };
 }
