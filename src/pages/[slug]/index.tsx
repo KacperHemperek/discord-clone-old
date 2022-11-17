@@ -72,17 +72,12 @@ function ChatRoom() {
       "chat-message",
       ({
         id,
-        message,
+    
       }: {
         id: number;
-        message: {
-          user: User;
-          id: number;
-          body: string;
-          createdAt: Date;
-        };
+       
       }) => {
-        console.log(message);
+        console.log(id);
         if (String(id) === chatId) {
           updateMessages();
         }

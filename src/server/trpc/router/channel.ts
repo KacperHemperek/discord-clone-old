@@ -114,11 +114,9 @@ export const channel = router({
         });
 
         if (newMessage) {
-          await pusherServer.trigger(
-            "chat-connection",
-            "chat-message",
-            { id: channelId}
-          );
+          await pusherServer.trigger("chat-connection", "chat-message", {
+            id: channelId,
+          });
         }
       } catch (err) {
         console.log(err);

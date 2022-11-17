@@ -8,7 +8,6 @@ import cookies from "next-cookies";
 import Head from "next/head";
 
 import Layout from "@layouts/layout";
-import { Redirect } from "next/dist/lib/load-custom-routes";
 import { getWelcomeChannel } from "@server/services/getWelcomeChannel";
 
 const Home: NextPage = () => {
@@ -30,7 +29,7 @@ export async function getServerSideProps(
 ): Promise<InferGetServerSidePropsType<any>> {
   const cookie = cookies(ctx);
 
-  // const welcomeChannelId = await getWelcomeChannel();
+  const welcomeChannelId = await getWelcomeChannel();
 
   if (!cookie.firebaseToken) {
     return {
@@ -44,7 +43,7 @@ export async function getServerSideProps(
   return {
     redirect: {
       permanent: false,
-      destination: `/1`,
+      destination: `/${welcomeChannelId}`,
     },
   };
 }
