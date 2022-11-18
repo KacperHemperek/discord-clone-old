@@ -9,7 +9,6 @@ import Head from "next/head";
 
 import Layout from "@layouts/layout";
 import { getWelcomeChannel } from "@server/services/getWelcomeChannel";
-import { createContext } from "@server/trpc/context";
 
 const Home: NextPage = () => {
   return (
@@ -40,10 +39,10 @@ export async function getServerSideProps(
   }
 
   return {
-    // redirect: {
-    //   permanent: false,
-    //   destination: `/${welcomeChannelId}`,
-    // },
+    redirect: {
+      permanent: false,
+      destination: `/${await getWelcomeChannel()}`,
+    },
   };
 }
 

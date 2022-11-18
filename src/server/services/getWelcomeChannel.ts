@@ -1,8 +1,8 @@
 import { Context } from "@server/trpc/context";
 
-export const getWelcomeChannel = async (ctx: Context): Promise<number> => {
+export const getWelcomeChannel = async (): Promise<number> => {
   try {
-    const channel = await ctx.prisma?.channel.findUnique({
+    const channel = await prisma?.channel.findUnique({
       where: { name: "Welcome" },
     });
     if (!channel?.id) {
