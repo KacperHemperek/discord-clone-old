@@ -5,9 +5,9 @@ import { router, publicProcedure } from "@server/trpc/trpc";
 export const user = router({
   getUserByEmail: publicProcedure
     .input(z.object({ email: z.string().email().nullable() }))
-    .query(({ input }) => {
+    .query(({ input, ctx }) => {
       if (input.email) {
-        return prisma?.user.findFirst({
+        return ctx.prisma?.user.findFirst({
           where: {
             email: input.email,
           },
@@ -17,12 +17,12 @@ export const user = router({
     }),
   createUser: publicProcedure
     .input(z.object({ name: z.string(), email: z.string().email() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       console.log({ input });
-      const welcomeChannel = await prisma?.channel.findUnique({
+      const welcomeChannel = await ctx.prisma?.channel.findUnique({
         where: { name: "Welcome" },
       });
-      const user = await prisma?.user.create({
+      const user = await ctx.prisma?.user.create({
         data: {
           email: input.email,
           name: input.name,

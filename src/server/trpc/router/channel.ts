@@ -11,11 +11,11 @@ export const channel = router({
         userId: z.number().nullable(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { name, desc, userId } = input;
       if (!userId) return;
       try {
-        await prisma?.channel.create({
+        await ctx.prisma?.channel.create({
           data: {
             desc,
             name,
@@ -28,11 +28,11 @@ export const channel = router({
     }),
   getUsers: publicProcedure
     .input(z.object({ id: z.number().nullable() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { id } = input;
 
       if (!id) return null;
-      const channel = await prisma?.channel.findUnique({
+      const channel = await ctx.prisma?.channel.findUnique({
         where: { id },
         include: {
           users: { where: {} },
@@ -42,8 +42,8 @@ export const channel = router({
       if (!channel) return null;
       return channel.users;
     }),
-  getChannels: publicProcedure.query(async () => {
-    const channels = await prisma?.channel.findMany();
+  getChannels: publicProcedure.query(async ({ ctx }) => {
+    const channels = await ctx.prisma?.channel.findMany();
     return channels;
   }),
   addUser: publicProcedure
@@ -53,11 +53,11 @@ export const channel = router({
         channelId: z.number(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { userId, channelId } = input;
 
       try {
-        await prisma?.channel.update({
+        await ctx.prisma?.channel.update({
           where: { id: channelId },
           data: { users: { connect: { id: userId } } },
         });
@@ -67,23 +67,23 @@ export const channel = router({
     }),
   getChannelById: publicProcedure
     .input(z.object({ id: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { id } = input;
-      return await prisma?.channel.findUnique({ where: { id } });
+      return await ctx.prisma?.channel.findUnique({ where: { id } });
     }),
 
   getChannelByName: publicProcedure
     .input(z.object({ name: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { name } = input;
-      return await prisma?.channel.findUnique({ where: { name } });
+      return await ctx.prisma?.channel.findUnique({ where: { name } });
     }),
   getMessages: publicProcedure
     .input(z.object({ channelId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { channelId } = input;
 
-      const messages = await prisma?.message.findMany({
+      const messages = await ctx.prisma?.message.findMany({
         where: { channelId },
         select: { user: true, body: true, createdAt: true, id: true },
         orderBy: { createdAt: "desc" },
@@ -99,13 +99,13 @@ export const channel = router({
         userId: z.number().nullable(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { message, channelId, userId } = input;
 
       if (!userId) throw new Error(`User id must be provided`);
       console.log("sending message");
       try {
-        const newMessage = await prisma?.message.create({
+        const newMessage = await ctx.prisma?.message.create({
           data: {
             body: message,
             channel: { connect: { id: channelId } },
@@ -114,11 +114,9 @@ export const channel = router({
         });
 
         if (newMessage) {
-          await pusherServer.trigger(
-            "chat-connection",
-            "chat-message",
-            { id: channelId}
-          );
+          await pusherServer.trigger("chat-connection", "chat-message", {
+            id: channelId,
+          });
         }
       } catch (err) {
         console.log(err);
