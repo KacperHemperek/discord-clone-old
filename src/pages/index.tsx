@@ -30,10 +30,6 @@ export async function getServerSideProps(
 ): Promise<InferGetServerSidePropsType<any>> {
   const cookie = cookies(ctx);
 
-  const prismaContext = await createContext();
-
-  const welcomeChannelId = await getWelcomeChannel(prismaContext);
-
   if (!cookie.firebaseToken) {
     return {
       redirect: {
@@ -44,10 +40,10 @@ export async function getServerSideProps(
   }
 
   return {
-    redirect: {
-      permanent: false,
-      destination: `/${welcomeChannelId}`,
-    },
+    // redirect: {
+    //   permanent: false,
+    //   destination: `/${welcomeChannelId}`,
+    // },
   };
 }
 
