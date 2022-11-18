@@ -9,6 +9,7 @@ import Head from "next/head";
 
 import Layout from "@layouts/layout";
 import { getWelcomeChannel } from "@server/services/getWelcomeChannel";
+import { createContext } from "@server/trpc/context";
 
 const Home: NextPage = () => {
   return (
@@ -29,7 +30,9 @@ export async function getServerSideProps(
 ): Promise<InferGetServerSidePropsType<any>> {
   const cookie = cookies(ctx);
 
-  const welcomeChannelId = await getWelcomeChannel();
+  const prismaContext = await createContext();
+
+  const welcomeChannelId = await getWelcomeChannel(prismaContext);
 
   if (!cookie.firebaseToken) {
     return {
