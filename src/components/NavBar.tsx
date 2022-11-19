@@ -48,6 +48,9 @@ function NavBar() {
   const { data: users, isLoading: loadingUsers } =
     trpc.channel.getUsers.useQuery({ id: channelId });
 
+  const { data: currentChannel, isLoading: loadingCurrentChannel } =
+    trpc.channel.getChannelById.useQuery({ id: channelId });
+
   const hideMenu = useCallback(() => {
     setShowAccountMenu(false);
   }, []);
@@ -76,7 +79,10 @@ function NavBar() {
     setShowAllChannels(false);
   }, [router.asPath]);
 
-  const currentChannel = channels?.find((channel) => channel.id === channelId);
+  const passSetModal = useCallback(
+    (value: boolean) => setModalOpen(value),
+    [modalOpen]
+  );
 
   const closeButton = (
     <button
@@ -146,7 +152,7 @@ function NavBar() {
               </>
             ) : (
               <>
-                {loadingChannels ? (
+                {!currentChannel && loadingCurrentChannel ? (
                   <>
                     <TitleSceleton className="mb-5" />
                     <ChannelDescriptionSceleton />
@@ -158,12 +164,11 @@ function NavBar() {
                       title={currentChannel?.name ?? ""}
                       className="mb-5"
                     />
-                    <p className="mb-10">{currentChannel?.desc}</p>
+                    <p className="mb-10">{currentChannel?.desc ?? ""}</p>
                     <Title title="Members" className="mb-5" />
                   </>
                 )}
 
-                {/* change hardcoded channels to the channel that is now selected */}
                 <UserList loading={loadingUsers} users={users} />
               </>
             )}
@@ -208,7 +213,7 @@ function NavBar() {
         </div>
       </div>
       {/* Modal to create new Chat */}
-      {modalOpen && <AddChatModal />}
+      {modalOpen && <AddChatModal setModalOpen={passSetModal} />}
     </>
   );
 }
