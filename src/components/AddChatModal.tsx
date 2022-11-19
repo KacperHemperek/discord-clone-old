@@ -1,23 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import useAuth from "@hooks/useAuth";
 import { trpc } from "@utils/trpc";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
-function AddChatModal() {
+function AddChatModal({
+  setModalOpen,
+}: {
+  setModalOpen: (value: boolean) => void;
+}) {
   const [channelName, setChannelName] = useState("");
   const [channelDesc, setChannelDesc] = useState("");
   const { currentUser } = useAuth();
+  const router = useRouter();
 
-  const { mutate } = trpc.channel.createChannel.useMutation();
+  const {
+    mutate: createChannel,
+    data,
+    error,
+    isLoading,
+  } = trpc.channel.createChannel.useMutation();
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    mutate({
+    createChannel({
       desc: channelDesc,
       name: channelName,
       userId: currentUser?.id ?? null,
     });
   }
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      toast.success(`Channel ${data.name} was successfully created`);
+
+      router.push(`/${data.id}`);
+      setModalOpen(false);
+      return;
+    }
+    if (error) {
+      toast.error("Could't create channel");
+      setModalOpen(false);
+    }
+  }, [isLoading, data, error]);
 
   return (
     <form

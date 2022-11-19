@@ -16,13 +16,15 @@ export const channel = router({
       const { name, desc, userId } = input;
       if (!userId) return;
       try {
-        await prisma?.channel.create({
+        const newChannel = await prisma?.channel.create({
           data: {
             desc,
             name,
             users: { connect: { id: userId } },
           },
         });
+
+        return newChannel;
       } catch (error: any) {
         throw new Error(error);
       }
@@ -67,9 +69,13 @@ export const channel = router({
       }
     }),
   getChannelById: publicProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number().nullable() }))
     .query(async ({ input }) => {
       const { id } = input;
+      if (id === null) {
+        return null;
+      }
+
       return await prisma?.channel.findUnique({ where: { id } });
     }),
 
