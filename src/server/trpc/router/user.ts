@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 import { router, publicProcedure } from "@server/trpc/trpc";
+import { prisma } from "@server/db/client";
 
 export const user = router({
   getUserByEmail: publicProcedure
     .input(z.object({ email: z.string().email().nullable() }))
     .query(({ input, ctx }) => {
       if (input.email) {
-        return ctx.prisma?.user.findFirst({
+        return prisma?.user.findFirst({
           where: {
             email: input.email,
           },
@@ -19,10 +20,10 @@ export const user = router({
     .input(z.object({ name: z.string(), email: z.string().email() }))
     .mutation(async ({ input, ctx }) => {
       console.log({ input });
-      const welcomeChannel = await ctx.prisma?.channel.findUnique({
+      const welcomeChannel = await prisma?.channel.findUnique({
         where: { name: "Welcome" },
       });
-      const user = await ctx.prisma?.user.create({
+      const user = await prisma?.user.create({
         data: {
           email: input.email,
           name: input.name,

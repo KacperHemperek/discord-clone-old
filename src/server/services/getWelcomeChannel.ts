@@ -1,5 +1,7 @@
 import { Context } from "@server/trpc/context";
 
+import { prisma } from "@server/db/client";
+
 export const getWelcomeChannel = async (): Promise<number> => {
   try {
     const channel = await prisma?.channel.findUnique({
