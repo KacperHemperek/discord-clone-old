@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import cookies from "next-cookies";
 import Link from "next/link";
+import Image from "next/image";
 
 import { toast } from "react-toastify";
 
 import useAuth from "@hooks/useAuth";
+import AvatarImage from "@assets/avatar-image.png";
 
 function Login() {
   const { emailSignUp } = useAuth();
@@ -13,6 +15,17 @@ function Login() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [currentPhotoUrl, setCurrentPhotoUrl] = useState<string | undefined | null>(
+    null
+  );
+
+  function onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files && event.target.files[0]) {
+      const imageUrl = URL.createObjectURL(event.target.files[0]);
+
+      setCurrentPhotoUrl(imageUrl);
+    }
+  }
 
   async function addUser(e: React.FormEvent) {
     e.preventDefault();
@@ -43,6 +56,28 @@ function Login() {
         className="flex w-80 flex-col rounded-xl bg-brandgray-500 p-8 shadow-lg md:w-96"
       >
         <h1 className=" mb-6 text-xl font-bold uppercase ">Register</h1>
+        <div
+          className={`${
+            currentPhotoUrl ? "bg-transparent" : " bg-brandgray-200 "
+          } relative mb-4 h-24 w-24 overflow-hidden rounded-lg `}
+        >
+          <Image
+            layout="fill"
+            src={currentPhotoUrl ?? AvatarImage}
+            alt="user avatar"
+            className="object-cover"
+          />
+        </div>
+        <label className="mb-5">
+          Add user photo
+          <input
+            type="file"
+            onChange={onImageChange}
+            className="hidden"
+            accept="image/*"
+          />
+        </label>
+
         <input
           type="text"
           value={name}
