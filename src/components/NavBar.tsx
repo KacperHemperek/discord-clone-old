@@ -57,7 +57,6 @@ function NavBar() {
 
   const closeNav = useCallback(() => {
     setNav(false);
-    console.log("closing nav");
   }, []);
 
   const closeModal = useCallback(() => {

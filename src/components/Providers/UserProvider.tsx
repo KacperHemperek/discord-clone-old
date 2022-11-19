@@ -16,6 +16,7 @@ import {
 import { auth } from "@utils/firebase";
 import { trpc } from "@utils/trpc";
 import { noop } from "@helpers/noop";
+import { toBase64 } from "@helpers/file";
 
 export const UserContext = React.createContext<UserContextType>({
   emailLogin: () => {
@@ -59,16 +60,21 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     confirm,
     password,
     name,
+    avatar,
   }: EmailSignUpArgs) {
     try {
       if (password !== confirm) {
         throw new Error("Passwords must match");
       }
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      if (cred) {
-        createUser({ email, name });
-        router.push("/");
-      }
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      const base64Avatar = avatar ? await toBase64(avatar) : null;
+      console.log(typeof base64Avatar);
+      createUser({
+        email,
+        name,
+      });
+      router.push("/");
     } catch (e: any) {
       console.error(e);
       throw new Error(e);

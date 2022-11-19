@@ -15,38 +15,43 @@ function Login() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [currentPhotoUrl, setCurrentPhotoUrl] = useState<string | undefined | null>(
-    null
-  );
+  const [currentPhotoUrl, setCurrentPhotoUrl] = useState<string | null>(null);
+  const [currentPhoto, setCurrentPhoto] = useState<File | null>(null);
 
   function onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
       const imageUrl = URL.createObjectURL(event.target.files[0]);
 
       setCurrentPhotoUrl(imageUrl);
+      setCurrentPhoto(event.target.files[0]);
     }
   }
 
   async function addUser(e: React.FormEvent) {
-    e.preventDefault();
-    toast.promise(
-      async () => {
-        try {
-          await emailSignUp({ email, password, name, confirm });
-        } catch (e: any) {
-          setPassword("");
-          setConfirm("");
-          setName("");
-          setEmail("");
-          throw new Error("User coudn't be created");
-        }
-      },
-      {
-        pending: "Waiting for response...",
-        success: "Signed in successfully",
-        error: "Couldn't sign up user",
+    const signUp = async () => {
+      try {
+        await emailSignUp({
+          email,
+          password,
+          name,
+          confirm,
+          avatar: currentPhoto,
+        });
+      } catch (e: any) {
+        setPassword("");
+        setConfirm("");
+        setName("");
+        setEmail("");
+        throw new Error(e);
       }
-    );
+    };
+
+    e.preventDefault();
+    toast.promise(signUp, {
+      pending: "Waiting for response...",
+      success: "Signed in successfully",
+      error: "Couldn't sign up user",
+    });
   }
 
   return (

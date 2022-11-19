@@ -2,11 +2,13 @@ import { z } from "zod";
 
 import { router, publicProcedure } from "@server/trpc/trpc";
 import { prisma } from "@server/db/client";
+import { ref, uploadBytes, uploadString } from "firebase/storage";
+import { usersStorage } from "@utils/firebase";
 
 export const user = router({
   getUserByEmail: publicProcedure
     .input(z.object({ email: z.string().email().nullable() }))
-    .query(({ input, ctx }) => {
+    .query(({ input }) => {
       if (input.email) {
         return prisma?.user.findFirst({
           where: {
@@ -17,23 +19,32 @@ export const user = router({
       return null;
     }),
   createUser: publicProcedure
-    .input(z.object({ name: z.string(), email: z.string().email() }))
-    .mutation(async ({ input, ctx }) => {
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string().email(),
+      })
+    )
+    .mutation(async ({ input }) => {
       console.log({ input });
       const welcomeChannel = await prisma?.channel.findUnique({
         where: { name: "Welcome" },
       });
+
       const user = await prisma?.user.create({
         data: {
           email: input.email,
           name: input.name,
           channels: { connect: { id: welcomeChannel?.id } },
         },
+
         select: {
+          id: true,
           name: true,
           channels: true,
         },
       });
+
       if (!user) {
         throw new Error("There was an error creating user");
       }
