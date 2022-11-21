@@ -110,7 +110,6 @@ export const channel = router({
       const { message, channelId, userId } = input;
 
       if (!userId) throw new Error(`User id must be provided`);
-      console.log("sending message");
       try {
         const newMessage = await prisma?.message.create({
           data: {
@@ -126,7 +125,7 @@ export const channel = router({
           });
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
         throw new Error("Couldn't send message");
       }
     }),

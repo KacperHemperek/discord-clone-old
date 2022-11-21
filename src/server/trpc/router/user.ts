@@ -2,8 +2,6 @@ import { z } from "zod";
 
 import { router, publicProcedure } from "@server/trpc/trpc";
 import { prisma } from "@server/db/client";
-import { ref, uploadBytes, uploadString } from "firebase/storage";
-import { usersStorage } from "@utils/firebase";
 
 export const user = router({
   getUserByEmail: publicProcedure
@@ -50,5 +48,12 @@ export const user = router({
       }
 
       console.log("user " + user.name + " created succesfully");
+      return user;
+    }),
+
+  editUser: publicProcedure
+    .input(z.object({ name: z.string().nullable(), avatar: z.string() }))
+    .mutation(async ({ input }) => {
+      const { name, avatar } = input;
     }),
 });

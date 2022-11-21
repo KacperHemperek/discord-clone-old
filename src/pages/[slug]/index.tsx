@@ -27,7 +27,6 @@ function ChatRoom() {
     data: messages,
     isLoading: loadingMessages,
     refetch: updateMessages,
-    
   } = trpc.channel.getMessages.useQuery({
     channelId: Number(chatId),
   });
@@ -43,7 +42,7 @@ function ChatRoom() {
         userId: currentUser?.id ?? null,
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       throw new Error("sending message failed");
     }
     setMessage("");
@@ -63,26 +62,13 @@ function ChatRoom() {
 
   useEffect(() => {
     const channel = pusherClient.subscribe("chat-connection");
-    console.log(channel);
-    channel.bind("pusher:subscription_succeeded", (data: any) => {
-      console.log("subscribed to pusher");
-    });
 
-    channel.bind(
-      "chat-message",
-      ({
-        id,
-    
-      }: {
-        id: number;
-       
-      }) => {
-        console.log(id);
-        if (String(id) === chatId) {
-          updateMessages();
-        }
+    channel.bind("chat-message", ({ id }: { id: number }) => {
+      console.log(id);
+      if (String(id) === chatId) {
+        updateMessages();
       }
-    );
+    });
   }, []);
 
   return (

@@ -3,20 +3,22 @@ import cookie from "js-cookie";
 import { useRouter } from "next/router";
 
 import {
-  EmailLoginArgs,
-  EmailSignUpArgs,
-  UserContextType,
-} from "@interface/UserContext";
-import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   User,
 } from "firebase/auth";
-import { auth } from "@utils/firebase";
+import { ref, uploadBytes } from "firebase/storage";
+
+import { auth, usersStorage } from "@utils/firebase";
 import { trpc } from "@utils/trpc";
 import { noop } from "@helpers/noop";
 import { toBase64 } from "@helpers/file";
+import {
+  EmailLoginArgs,
+  EmailSignUpArgs,
+  UserContextType,
+} from "@interface/UserContext";
 
 export const UserContext = React.createContext<UserContextType>({
   emailLogin: () => {
@@ -35,8 +37,10 @@ export const UserContext = React.createContext<UserContextType>({
 const firebaseCookie = "firebaseToken";
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  const { mutate: createUser } = trpc.user.createUser.useMutation();
+  const { mutate: createUser, data: createdUserData } =
+    trpc.user.createUser.useMutation();
   const [currentMail, setCurrentMail] = useState<string | null>(null);
+  const [newPhoto, setNewPhoto] = useState<File | null>(null);
   const { data: currentUser, isLoading: loadingUser } =
     trpc.user.getUserByEmail.useQuery({
       email: currentMail,
@@ -68,12 +72,12 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       }
       await createUserWithEmailAndPassword(auth, email, password);
 
-      const base64Avatar = avatar ? await toBase64(avatar) : null;
-      console.log(typeof base64Avatar);
       createUser({
         email,
         name,
       });
+
+      setNewPhoto(avatar);
       router.push("/");
     } catch (e: any) {
       console.error(e);
@@ -100,6 +104,19 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     const unsub = auth.onAuthStateChanged(handleAuthChange);
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    if (newPhoto && createdUserData) {
+      const userImageRef = ref(
+        usersStorage,
+        `${createdUserData.id}/${newPhoto.name}`
+      );
+
+      uploadBytes(userImageRef, newPhoto);
+
+      setNewPhoto(null);
+    }
+  }, [createdUserData]);
 
   const createContext = React.useCallback((): UserContextType => {
     return { emailLogin, emailSignUp, logOut, currentUser, loadingUser };
