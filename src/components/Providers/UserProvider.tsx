@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import cookie from "js-cookie";
 import { useRouter } from "next/router";
 
@@ -8,12 +8,11 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { auth, usersStorage } from "@utils/firebase";
 import { trpc } from "@utils/trpc";
 import { noop } from "@helpers/noop";
-import { toBase64 } from "@helpers/file";
 import {
   EmailLoginArgs,
   EmailSignUpArgs,
@@ -40,6 +39,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const { mutate: createUser, data: createdUserData } =
     trpc.user.createUser.useMutation();
 
+  const { mutate: updateUser } = trpc.user.editUser.useMutation();
+
   const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
 
@@ -50,48 +51,47 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const router = useRouter();
 
-  async function emailLogin({ email, password }: EmailLoginArgs) {
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      if (cred) {
+  const emailLogin = useCallback(
+    async ({ email, password }: EmailLoginArgs) => {
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        if (cred) {
+          router.push("/");
+        }
+      } catch (e: any) {
+        throw new Error(e.code);
+      }
+    },
+    []
+  );
+
+  const emailSignUp = useCallback(
+    async ({ email, confirm, password, name, avatar }: EmailSignUpArgs) => {
+      try {
+        if (password !== confirm) {
+          throw new Error("Passwords must match");
+        }
+        await createUserWithEmailAndPassword(auth, email, password);
+
+        createUser({
+          email,
+          name,
+        });
+
+        setNewPhoto(avatar);
         router.push("/");
+      } catch (e: any) {
+        console.error(e);
+        throw new Error(e);
       }
-    } catch (e: any) {
-      throw new Error(e.code);
-    }
-  }
+    },
+    []
+  );
 
-  async function emailSignUp({
-    email,
-    confirm,
-    password,
-    name,
-    avatar,
-  }: EmailSignUpArgs) {
-    try {
-      if (password !== confirm) {
-        throw new Error("Passwords must match");
-      }
-      await createUserWithEmailAndPassword(auth, email, password);
-
-      createUser({
-        email,
-        name,
-        avatar: avatar?.name,
-      });
-
-      setNewPhoto(avatar);
-      router.push("/");
-    } catch (e: any) {
-      console.error(e);
-      throw new Error(e);
-    }
-  }
-
-  function logOut() {
+  const logOut = useCallback(() => {
     signOut(auth);
     router.push("/login");
-  }
+  }, [auth]);
 
   async function handleAuthChange(user: User | null) {
     if (!user) {
@@ -109,19 +109,31 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (newPhoto && createdUserData) {
+    const addPhotoToUser = async () => {
+      if (!newPhoto || !createdUserData) {
+        return;
+      }
       const userImageRef = ref(
         usersStorage,
         `${createdUserData.id}/${newPhoto.name}`
       );
 
-      uploadBytes(userImageRef, newPhoto);
+      await uploadBytes(userImageRef, newPhoto);
 
+      const photoRef = ref(userImageRef);
+      const photo = await getDownloadURL(photoRef);
+
+      console.log(photo);
+      updateUser({ avatar: photo, userId: createdUserData.id });
+
+      updateUser;
       setNewPhoto(null);
-    }
+    };
+
+    addPhotoToUser();
   }, [createdUserData]);
 
-  const createContext = React.useCallback((): UserContextType => {
+  const createContext = useCallback((): UserContextType => {
     return { emailLogin, emailSignUp, logOut, currentUser, loadingUser };
   }, [currentUser, emailLogin, emailSignUp, logOut, currentMail, loadingUser]);
 

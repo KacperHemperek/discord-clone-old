@@ -56,8 +56,8 @@ export const user = router({
   editUser: publicProcedure
     .input(
       z.object({
-        name: z.string().nullable(),
-        avatar: z.string(),
+        name: z.string().nullable().optional(),
+        avatar: z.string().nullable().optional(),
         userId: z.number(),
       })
     )
