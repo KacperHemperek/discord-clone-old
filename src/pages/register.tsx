@@ -112,7 +112,7 @@ function Login() {
           onInput={(e) => setConfirm((e.target as HTMLInputElement).value)}
         />
         <Link href="/login">
-          <p className="mb-8 cursor-pointer hover:underline">
+          <p className="mb-8 cursor-pointer underline">
             Already have an account? Login!
           </p>
         </Link>

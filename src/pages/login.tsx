@@ -44,7 +44,7 @@ function Login() {
         />
 
         <Link href="/register">
-          <p className="mb-8 cursor-pointer hover:underline">
+          <p className="mb-8 cursor-pointer underline">
             Don&apos;t have an account yet? Register!
           </p>
         </Link>
