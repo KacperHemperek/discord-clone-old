@@ -108,28 +108,28 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     return () => unsub();
   }, []);
 
+  const addPhotoToUser = useCallback(async () => {
+    if (!newPhoto || !createdUserData) {
+      return;
+    }
+    const userImageRef = ref(
+      usersStorage,
+      `${createdUserData.id}/${newPhoto.name}`
+    );
+
+    const res = await uploadBytes(userImageRef, newPhoto);
+
+    const photoRef = ref(userImageRef);
+    const photo = await getDownloadURL(photoRef);
+
+    console.log(photo);
+    updateUser({ avatar: photo, userId: createdUserData.id });
+
+    updateUser;
+    setNewPhoto(null);
+  }, [newPhoto, createdUserData]);
+
   useEffect(() => {
-    const addPhotoToUser = async () => {
-      if (!newPhoto || !createdUserData) {
-        return;
-      }
-      const userImageRef = ref(
-        usersStorage,
-        `${createdUserData.id}/${newPhoto.name}`
-      );
-
-      await uploadBytes(userImageRef, newPhoto);
-
-      const photoRef = ref(userImageRef);
-      const photo = await getDownloadURL(photoRef);
-
-      console.log(photo);
-      updateUser({ avatar: photo, userId: createdUserData.id });
-
-      updateUser;
-      setNewPhoto(null);
-    };
-
     addPhotoToUser();
   }, [createdUserData]);
 

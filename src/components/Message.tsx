@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 
 import Avatar from "@components/Avatar";
 import { getDaysAgo } from "@helpers/date";
+import PlaceholderAvatar from "@assets/avatar-image.png";
 
 type MessageProps = {
   user: User;
@@ -18,7 +19,7 @@ function Message({ body, createdAt, user }: MessageProps) {
   return (
     <div className="my-4 flex w-full">
       <div>
-        <Avatar avatar="https://i.pravatar.cc/400" />
+        <Avatar avatar={user?.avatar ?? PlaceholderAvatar} />
       </div>
       <div className=" flex-grow ">
         <div className="mb-1 flex items-center space-x-8 text-brandgray-100">
