@@ -21,6 +21,7 @@ export const user = router({
       z.object({
         name: z.string(),
         email: z.string().email(),
+        avatar: z.string().nullable().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -34,12 +35,13 @@ export const user = router({
           email: input.email,
           name: input.name,
           channels: { connect: { id: welcomeChannel?.id } },
+          avatar: input.avatar,
         },
-
         select: {
           id: true,
           name: true,
           channels: true,
+          avatar: true,
         },
       });
 
@@ -52,8 +54,24 @@ export const user = router({
     }),
 
   editUser: publicProcedure
-    .input(z.object({ name: z.string().nullable(), avatar: z.string() }))
+    .input(
+      z.object({
+        name: z.string().nullable(),
+        avatar: z.string(),
+        userId: z.number(),
+      })
+    )
     .mutation(async ({ input }) => {
-      const { name, avatar } = input;
+      const { name, avatar, userId } = input;
+
+      if (name && avatar) {
+        prisma.user.update({ where: { id: userId }, data: { name, avatar } });
+      }
+      if (name) {
+        prisma.user.update({ where: { id: userId }, data: { name } });
+      }
+      if (avatar) {
+        prisma.user.update({ where: { id: userId }, data: { avatar } });
+      }
     }),
 });

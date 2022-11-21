@@ -39,8 +39,10 @@ const firebaseCookie = "firebaseToken";
 function UserProvider({ children }: { children: React.ReactNode }) {
   const { mutate: createUser, data: createdUserData } =
     trpc.user.createUser.useMutation();
+
   const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
+
   const { data: currentUser, isLoading: loadingUser } =
     trpc.user.getUserByEmail.useQuery({
       email: currentMail,
@@ -75,6 +77,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       createUser({
         email,
         name,
+        avatar: avatar?.name,
       });
 
       setNewPhoto(avatar);
