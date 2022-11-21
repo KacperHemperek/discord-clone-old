@@ -8,6 +8,4 @@ export const toBase64 = async (file: File) => {
       .replace(/^.+,/, "");
   };
   reader.readAsDataURL(file);
-
-  return resultVal;
 };
