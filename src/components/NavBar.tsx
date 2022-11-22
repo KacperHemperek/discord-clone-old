@@ -60,6 +60,9 @@ function NavBar() {
   }, []);
 
   const closeModal = useCallback(() => {
+    if (router.query.edituser === "true") {
+      router.replace({ query: { slug: router.query.slug } });
+    }
     setModalOpen(false);
   }, []);
 
@@ -95,7 +98,11 @@ function NavBar() {
   return (
     <>
       <Overlay onClick={closeNav} show={navOpen && !modalOpen} />
-      <Overlay onClick={closeModal} show={modalOpen} className="z-30" />
+      <Overlay
+        onClick={closeModal}
+        show={modalOpen || router.query.edituser === "true"}
+        className="z-30"
+      />
       <div
         className={`${
           navOpen ? "-translate-x-0" : "-translate-x-[115%] lg:-translate-x-0"
@@ -189,7 +196,15 @@ function NavBar() {
                     : "pointer-events-none translate-y-4 opacity-0"
                 } absolute bottom-full right-0 flex w-48 flex-col space-y-2 rounded-md  border border-brandgray-100 bg-brandgray-300 p-3 transition`}
               >
-                <button className=" flex items-center rounded-md p-3 transition hover:bg-brandgray-200">
+                <button
+                  onClick={() => {
+                    router.query.edituser = String(true);
+                    router.replace({
+                      query: { ...router.query, edituser: "true" },
+                    });
+                  }}
+                  className=" flex items-center rounded-md p-3 transition hover:bg-brandgray-200"
+                >
                   <MdAccountCircle className="mr-2 h-5 w-5 text-brandwhite" />
                   <p className="text-xs font-medium">Account</p>
                 </button>
@@ -213,6 +228,9 @@ function NavBar() {
       </div>
       {/* Modal to create new Chat */}
       {modalOpen && <AddChatModal setModalOpen={passSetModal} />}
+      {router.query.edituser === String(true) && (
+        <AddChatModal setModalOpen={() => router.replace(router.asPath)} />
+      )}
     </>
   );
 }
