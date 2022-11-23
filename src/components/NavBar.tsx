@@ -30,6 +30,7 @@ import TitleSceleton from "@components/Sceletons/TitleSceleton";
 import UserCard from "@components/UserCard";
 import UserCardSkeleton from "@components/Sceletons/UserCardSkeleton";
 import UserList from "@components/UserList";
+import CurrentChannel from "./CurrentChannel";
 
 function NavBar() {
   const { navOpen, setNav, channelId } = useNav();
@@ -42,8 +43,7 @@ function NavBar() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { data: channels, isLoading: loadingChannels } =
-    trpc.channel.getChannels.useQuery();
+  const { data: channels } = trpc.channel.getChannels.useQuery();
 
   const { data: users, isLoading: loadingUsers } =
     trpc.channel.getUsers.useQuery({ id: channelId });
@@ -157,26 +157,7 @@ function NavBar() {
                 />
               </>
             ) : (
-              <>
-                {!currentChannel && loadingCurrentChannel ? (
-                  <>
-                    <TitleSceleton className="mb-5" />
-                    <ChannelDescriptionSceleton />
-                    <TitleSceleton className="mb-5 w-32" />
-                  </>
-                ) : (
-                  <>
-                    <Title
-                      title={currentChannel?.name ?? ""}
-                      className="mb-5"
-                    />
-                    <p className="mb-10">{currentChannel?.desc ?? ""}</p>
-                    <Title title="Members" className="mb-5" />
-                  </>
-                )}
-
-                <UserList loading={loadingUsers} users={users} />
-              </>
+              <CurrentChannel channelId={channelId} />
             )}
           </div>
 
