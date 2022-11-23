@@ -19,22 +19,19 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex max-h-screen w-screen  text-brandwhite">
       <NavBar />
-      <div className="flex w-full flex-col">
-        <div className="flex h-screen flex-col ">
-          <div className="flex min-h-[64px] items-center px-4 shadow-lg md:px-16">
-            <button
-              className="cursor-pointer lg:hidden"
-              onClick={() => setNav(true)}
-            >
-              <MdMenu className="mr-6 h-6 w-6" />
-            </button>
-            <h1 className="text-lg font-bold uppercase">
-              {channel?.name ?? ""}
-            </h1>
-          </div>
 
-          {children}
+      <div className="flex h-screen w-full flex-col ">
+        <div className="flex min-h-[64px] items-center px-4 shadow-lg md:px-16">
+          <button
+            className="cursor-pointer lg:hidden"
+            onClick={() => setNav(true)}
+          >
+            <MdMenu className="mr-6 h-6 w-6" />
+          </button>
+          <h1 className="text-lg font-bold uppercase">{channel?.name ?? ""}</h1>
         </div>
+
+        {children}
       </div>
     </div>
   );

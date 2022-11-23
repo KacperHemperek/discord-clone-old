@@ -12,7 +12,7 @@ function ChanelsList({
   setShowAllChannels: () => void;
 }) {
   return (
-    <div className="custom-scroll flex flex-col space-y-6 overflow-y-scroll">
+    <div className="custom-scroll flex flex-grow flex-col space-y-6 overflow-y-scroll">
       {channels?.map((item) => (
         <ChanelCard
           onClick={setShowAllChannels}

@@ -13,9 +13,9 @@ function UserList({
   loading: boolean;
 }) {
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="custom-scroll flex w-full flex-grow flex-col space-y-6 overflow-y-scroll">
       {loading
-        ? [...Array(4)].map((_, idx) => <UserCardSkeleton key={idx} />)
+        ? [...Array(6)].map((_, idx) => <UserCardSkeleton key={idx} />)
         : users?.map((user) => (
             <UserCard name={user.name} key={user.name + user.id} />
           ))}

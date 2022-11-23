@@ -106,7 +106,7 @@ function NavBar() {
       <div
         className={`${
           navOpen ? "-translate-x-0" : "-translate-x-[115%] lg:-translate-x-0"
-        } fixed left-0 z-20 flex h-screen w-80 min-w-[320px] flex-col bg-brandgray-400 transition lg:static`}
+        } fixed left-0 z-20 flex w-80 min-w-[320px] flex-col bg-brandgray-400 transition lg:static`}
       >
         {/* Header of Navbar */}
         {showAllChannels ? (
@@ -134,8 +134,8 @@ function NavBar() {
             {closeButton}
           </div>
         )}
-        <div className="flex h-full flex-col justify-between ">
-          <div className="px-8 py-6">
+        <div className="flex flex-grow flex-col overflow-hidden">
+          <div className="flex h-full flex-col overflow-hidden px-8 py-6">
             {showAllChannels ? (
               <>
                 {/* Search Bar */}
@@ -179,6 +179,7 @@ function NavBar() {
               </>
             )}
           </div>
+
           {/* User Account */}
           <div className="flex justify-between bg-brandgray-500 px-10 py-5">
             {loadingUser || !currentUser ? (
