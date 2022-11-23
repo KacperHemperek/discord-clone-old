@@ -23,13 +23,9 @@ import useOnClickOutside from "@hooks/useClickOutside";
 import { trpc } from "@utils/trpc";
 import ChanelsList from "@components/ChanelsList";
 import AddChatModal from "@components/AddChatModal";
-import ChannelDescriptionSceleton from "@components/Sceletons/ChannelDescriptionSceleton";
 import Overlay from "@components/Overlay";
-import Title from "@components/Title";
-import TitleSceleton from "@components/Sceletons/TitleSceleton";
 import UserCard from "@components/UserCard";
 import UserCardSkeleton from "@components/Sceletons/UserCardSkeleton";
-import UserList from "@components/UserList";
 import CurrentChannel from "./CurrentChannel";
 
 function NavBar() {
@@ -44,12 +40,6 @@ function NavBar() {
   const [search, setSearch] = useState("");
 
   const { data: channels } = trpc.channel.getChannels.useQuery();
-
-  const { data: users, isLoading: loadingUsers } =
-    trpc.channel.getUsers.useQuery({ id: channelId });
-
-  const { data: currentChannel, isLoading: loadingCurrentChannel } =
-    trpc.channel.getChannelById.useQuery({ id: channelId });
 
   const hideMenu = useCallback(() => {
     setShowAccountMenu(false);
