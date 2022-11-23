@@ -39,7 +39,9 @@ function NavBar() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { data: channels } = trpc.channel.getChannels.useQuery();
+  const { data: channels } = trpc.channel.getChannels.useQuery(undefined, {
+    refetchInterval: 5000,
+  });
 
   const hideMenu = useCallback(() => {
     setShowAccountMenu(false);
