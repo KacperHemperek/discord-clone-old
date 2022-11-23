@@ -184,6 +184,7 @@ function NavBar() {
                     router.replace({
                       query: { ...router.query, edituser: "true" },
                     });
+                    setShowAccountMenu(false);
                   }}
                   className=" flex items-center rounded-md p-3 transition hover:bg-brandgray-200"
                 >
