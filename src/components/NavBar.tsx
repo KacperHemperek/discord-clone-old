@@ -155,7 +155,7 @@ function NavBar() {
 
           {/* User Account */}
           <div className="flex justify-between bg-brandgray-500 px-10 py-5">
-            {loadingUser || !currentUser ? (
+            {!currentUser ? (
               <UserCardSkeleton />
             ) : (
               <UserCard name={currentUser?.name || "Guest"} />
