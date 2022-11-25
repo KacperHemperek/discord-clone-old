@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { router, publicProcedure } from "@server/trpc/trpc";
 import { prisma } from "@server/db/client";
+import { pusherServer } from "@server/helpers/pusher";
 
 export const user = router({
   getUserByEmail: publicProcedure
@@ -37,12 +38,6 @@ export const user = router({
           channels: { connect: { id: welcomeChannel?.id } },
           avatar: input.avatar,
         },
-        select: {
-          id: true,
-          name: true,
-          channels: true,
-          avatar: true,
-        },
       });
 
       if (!user) {
@@ -50,6 +45,8 @@ export const user = router({
       }
 
       console.log("user " + user.name + " created succesfully");
+      pusherServer.trigger("user-connection", "user-created", user);
+
       return user;
     }),
 

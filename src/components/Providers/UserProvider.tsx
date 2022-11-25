@@ -18,6 +18,8 @@ import {
   EmailSignUpArgs,
   UserContextType,
 } from "@interface/UserContext";
+import { pusherClient } from "@utils/pusherClient";
+import { User as PrismaUser } from "@prisma/client";
 
 export const UserContext = React.createContext<UserContextType>({
   emailLogin: () => {
@@ -44,10 +46,13 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
 
-  const { data: currentUser, isLoading: loadingUser } =
-    trpc.user.getUserByEmail.useQuery({
-      email: currentMail,
-    });
+  const {
+    data: currentUser,
+    isLoading: loadingUser,
+    refetch: refetchUser,
+  } = trpc.user.getUserByEmail.useQuery({
+    email: auth.currentUser?.email ?? null,
+  });
 
   const router = useRouter();
 
@@ -77,7 +82,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
           email,
           name,
         });
-
+        console.log(avatar);
         setNewPhoto(avatar);
         router.push("/");
       } catch (e: any) {
@@ -100,38 +105,43 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     }
     const token = await user.getIdToken();
     cookie.set(firebaseCookie, token, { expires: 14 });
-    setCurrentMail(user.email || null);
+    refetchUser();
   }
+
+  const addPhotoToUser = useCallback(
+    async (user: PrismaUser) => {
+      if (!newPhoto || !createdUserData) {
+        return;
+      }
+      const userImageRef = ref(usersStorage, `${user.id}/${newPhoto.name}`);
+
+      await uploadBytes(userImageRef, newPhoto);
+
+      const photoRef = ref(userImageRef);
+      const photo = await getDownloadURL(photoRef);
+
+      console.log(photo);
+      updateUser({ avatar: photo, userId: createdUserData.id });
+
+      setNewPhoto(null);
+    },
+    [newPhoto, createdUserData]
+  );
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged(handleAuthChange);
-    return () => unsub();
+    const channel = pusherClient.subscribe("user-connection");
+
+    channel.bind("user-created", async (user: PrismaUser) => {
+      console.log(newPhoto);
+      await addPhotoToUser(user);
+      refetchUser();
+    });
+    return () => {
+      channel.unsubscribe();
+      unsub();
+    };
   }, []);
-
-  const addPhotoToUser = useCallback(async () => {
-    if (!newPhoto || !createdUserData) {
-      return;
-    }
-    const userImageRef = ref(
-      usersStorage,
-      `${createdUserData.id}/${newPhoto.name}`
-    );
-
-    const res = await uploadBytes(userImageRef, newPhoto);
-
-    const photoRef = ref(userImageRef);
-    const photo = await getDownloadURL(photoRef);
-
-    console.log(photo);
-    updateUser({ avatar: photo, userId: createdUserData.id });
-
-    updateUser;
-    setNewPhoto(null);
-  }, [newPhoto, createdUserData]);
-
-  useEffect(() => {
-    addPhotoToUser();
-  }, [createdUserData]);
 
   const createContext = useCallback((): UserContextType => {
     return { emailLogin, emailSignUp, logOut, currentUser, loadingUser };

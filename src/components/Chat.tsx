@@ -26,8 +26,6 @@ function Chat({ messages, loading }: ChatProps) {
   }, []);
 
   const renderMessages = useCallback(() => {
-    console.log(messages);
-
     if (loading) {
       return [...Array(10)].map((_, i) => <MessageSceleton key={i} />);
     }

@@ -27,6 +27,7 @@ import Overlay from "@components/Overlay";
 import UserCard from "@components/UserCard";
 import UserCardSkeleton from "@components/Sceletons/UserCardSkeleton";
 import CurrentChannel from "./CurrentChannel";
+import AccountDetails from "./AccountDetails";
 
 function NavBar() {
   const { navOpen, setNav, channelId } = useNav();
@@ -203,9 +204,7 @@ function NavBar() {
       </div>
       {/* Modal to create new Chat */}
       {modalOpen && <AddChatModal setModalOpen={passSetModal} />}
-      {router.query.edituser === String(true) && (
-        <AddChatModal setModalOpen={() => router.replace(router.asPath)} />
-      )}
+      {router.query.edituser === String(true) && <AccountDetails />}
     </>
   );
 }
