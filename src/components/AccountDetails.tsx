@@ -5,14 +5,28 @@ import ModalContainer from "./ModalContainer";
 import AvatarPlaceholder from "@assets/avatar-image.png";
 import useAuth from "@hooks/useAuth";
 import { MdEdit } from "react-icons/md";
+import { trpc } from "@utils/trpc";
 
 function AccountDetails() {
   const { currentUser } = useAuth();
   const [nameVal, setNameVal] = useState("");
   const [editProfile, setEditProfile] = useState(false);
+  const { mutate: editUser } = trpc.user.editUser.useMutation();
+
+  function submitUser(e: React.FormEvent) {
+    e.preventDefault();
+    editUser({ name: nameVal, userId: currentUser?.id ?? null });
+
+    setNameVal(currentUser?.name ?? "");
+  }
+
+  function resetForm() {
+    setEditProfile(false);
+    setNameVal(currentUser?.name ?? "");
+  }
 
   return (
-    <ModalContainer>
+    <ModalContainer isForm handleSubmit={submitUser}>
       <div className=" flex justify-between align-top">
         <div
           className={
@@ -57,13 +71,12 @@ function AccountDetails() {
       />
       {editProfile && (
         <div className="flex w-fit space-x-4 self-end">
-          <button
-            onClick={() => setEditProfile(false)}
-            className="btn bg-red-500"
-          >
+          <button onClick={resetForm} className="btn bg-red-500">
             Discard
           </button>
-          <button className="btn max-w-fit ">Save</button>
+          <button type="submit" className="btn max-w-fit ">
+            Save
+          </button>
         </div>
       )}
     </ModalContainer>

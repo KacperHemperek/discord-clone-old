@@ -55,11 +55,15 @@ export const user = router({
       z.object({
         name: z.string().nullable().optional(),
         avatar: z.string().nullable().optional(),
-        userId: z.number(),
+        userId: z.number().nullable(),
       })
     )
     .mutation(async ({ input }) => {
       const { name, avatar, userId } = input;
+      if (!userId) {
+        console.error("Couldn't create user with no id");
+        return;
+      }
 
       if (name && avatar) {
         prisma.user.update({ where: { id: userId }, data: { name, avatar } });
