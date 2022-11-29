@@ -1,16 +1,21 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ModalContainer from "./ModalContainer";
 
 import AvatarPlaceholder from "@assets/avatar-image.png";
 import useAuth from "@hooks/useAuth";
 import { MdEdit } from "react-icons/md";
 import { trpc } from "@utils/trpc";
+import { User } from "@prisma/client";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { usersStorage } from "@utils/firebase";
 
 function AccountDetails() {
   const { currentUser } = useAuth();
+
   const [nameVal, setNameVal] = useState("");
   const [editProfile, setEditProfile] = useState(false);
+  const [newPhoto, setNewPhoto] = useState<File | null>(null);
   const { mutate: editUser } = trpc.user.editUser.useMutation();
 
   function submitUser(e: React.FormEvent) {
@@ -19,6 +24,25 @@ function AccountDetails() {
 
     setNameVal(currentUser?.name ?? "");
   }
+
+  const addPhotoToUser = useCallback(
+    async (user: User) => {
+      if (!newPhoto) {
+        return;
+      }
+      const userImageRef = ref(usersStorage, `${user.id}/${newPhoto.name}`);
+
+      await uploadBytes(userImageRef, newPhoto);
+
+      const photoRef = ref(userImageRef);
+      const photo = await getDownloadURL(photoRef);
+
+      editUser({ avatar: photo, userId: currentUser?.id ?? null });
+
+      setNewPhoto(null);
+    },
+    [newPhoto]
+  );
 
   function resetForm() {
     setEditProfile(false);

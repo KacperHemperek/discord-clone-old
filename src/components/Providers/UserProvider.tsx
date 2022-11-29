@@ -41,10 +41,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const { mutate: createUser, data: createdUserData } =
     trpc.user.createUser.useMutation();
 
-  const { mutate: updateUser } = trpc.user.editUser.useMutation();
 
   const [currentMail, setCurrentMail] = useState<string | null>(null);
-  const [newPhoto, setNewPhoto] = useState<File | null>(null);
   const [currentUserEmail, setCurretnUserEmail] = useState<string | null>(null);
 
   const {
@@ -112,31 +110,11 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     [firebaseCookie, currentUserEmail]
   );
 
-  const addPhotoToUser = useCallback(
-    async (user: PrismaUser) => {
-      if (!newPhoto || !createdUserData) {
-        return;
-      }
-      const userImageRef = ref(usersStorage, `${user.id}/${newPhoto.name}`);
-
-      await uploadBytes(userImageRef, newPhoto);
-
-      const photoRef = ref(userImageRef);
-      const photo = await getDownloadURL(photoRef);
-
-      updateUser({ avatar: photo, userId: createdUserData.id });
-
-      setNewPhoto(null);
-    },
-    [newPhoto, createdUserData]
-  );
-
   useEffect(() => {
     const unsub = auth.onAuthStateChanged(handleAuthChange);
     const channel = pusherClient.subscribe("user-connection");
 
     channel.bind("user-created", async (user: PrismaUser) => {
-      await addPhotoToUser(user);
       refetchUser();
     });
     return () => {
