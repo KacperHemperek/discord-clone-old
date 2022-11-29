@@ -83,7 +83,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
           email,
           name,
         });
-       
+
         router.push("/");
       } catch (e: any) {
         console.error(e);
@@ -104,7 +104,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         cookie.remove(firebaseCookie);
         return;
       }
-      console.log(user);
+
       const token = await user.getIdToken();
       cookie.set(firebaseCookie, token, { expires: 14 });
       setCurretnUserEmail(user.email);
@@ -124,7 +124,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       const photoRef = ref(userImageRef);
       const photo = await getDownloadURL(photoRef);
 
-      console.log(photo);
       updateUser({ avatar: photo, userId: createdUserData.id });
 
       setNewPhoto(null);
