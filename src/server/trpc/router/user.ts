@@ -3,6 +3,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "@server/trpc/trpc";
 import { prisma } from "@server/db/client";
 import { pusherServer } from "@server/helpers/pusher";
+import { User } from "@prisma/client";
 
 export const user = router({
   getUserByEmail: publicProcedure
@@ -64,15 +65,26 @@ export const user = router({
         console.error("Couldn't create user with no id");
         return;
       }
-
+      let user: User | null = null;
       if (name && avatar) {
-        prisma.user.update({ where: { id: userId }, data: { name, avatar } });
+        user = await prisma.user.update({
+          where: { id: userId },
+          data: { name, avatar },
+        });
       }
       if (name) {
-        prisma.user.update({ where: { id: userId }, data: { name } });
+        user = await prisma.user.update({
+          where: { id: userId },
+          data: { name },
+        });
       }
       if (avatar) {
-        prisma.user.update({ where: { id: userId }, data: { avatar } });
+        user = await prisma.user.update({
+          where: { id: userId },
+          data: { avatar },
+        });
       }
+
+      return user;
     }),
 });

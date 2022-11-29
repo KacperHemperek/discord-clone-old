@@ -49,6 +49,7 @@ function NavBar() {
   }, []);
 
   const closeNav = useCallback(() => {
+    console.log("closing nav");
     setNav(false);
   }, []);
 
@@ -99,7 +100,7 @@ function NavBar() {
       <div
         className={`${
           navOpen ? "-translate-x-0" : "-translate-x-[115%] lg:-translate-x-0"
-        } fixed left-0 z-20 flex w-80 min-w-[320px] flex-col bg-brandgray-400 transition lg:static`}
+        } fixed left-0 z-20 flex h-screen w-80 min-w-[320px] flex-col bg-brandgray-400 transition lg:static`}
       >
         {/* Header of Navbar */}
         {showAllChannels ? (

@@ -22,6 +22,6 @@ export default defineNextConfig({
     defaultLocale: "en",
   },
   images: {
-    domains: ["i.pravatar.cc"],
+    domains: ["firebasestorage.googleapis.com", "i.pravatar.cc"],
   },
 });

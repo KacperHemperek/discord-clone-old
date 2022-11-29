@@ -19,16 +19,28 @@ function AccountDetails() {
 
   const photoUrl = newPhoto && URL.createObjectURL(newPhoto);
 
-  async function submitEditUser(e: React.FormEvent) {
-    e.preventDefault();
-    editUser({ name: nameVal, userId: currentUser?.id ?? null });
+  const submitEditUser = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      const newName = nameVal.trim() === "" ? null : nameVal;
 
-    setNameVal(currentUser?.name ?? "");
-  }
+      getFirebaseLink().then((photo) => {
+        console.log(photo);
+        editUser({
+          name: newName,
+          avatar: photo,
+          userId: currentUser?.id ?? null,
+        });
+      });
 
-  const addPhotoToUser = useCallback(async () => {
+      setNameVal(currentUser?.name ?? "");
+    },
+    [currentUser, nameVal]
+  );
+
+  const getFirebaseLink = useCallback(async () => {
     if (!newPhoto || !currentUser?.id) {
-      return;
+      return null;
     }
     const userImageRef = ref(
       usersStorage,
@@ -38,17 +50,15 @@ function AccountDetails() {
     await uploadBytes(userImageRef, newPhoto);
 
     const photoRef = ref(userImageRef);
+
     const photo = await getDownloadURL(photoRef);
+    console.log(photo);
 
-    editUser({ avatar: photo, userId: currentUser?.id ?? null });
-
-    setNewPhoto(null);
-  }, [newPhoto]);
+    return photo;
+  }, [newPhoto, currentUser]);
 
   function onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
-      const imageUrl = URL.createObjectURL(event.target.files[0]);
-
       setNewPhoto(event.target.files[0]);
     }
   }
