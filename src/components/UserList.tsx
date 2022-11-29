@@ -17,7 +17,11 @@ function UserList({
       {loading
         ? [...Array(6)].map((_, idx) => <UserCardSkeleton key={idx} />)
         : users?.map((user) => (
-            <UserCard name={user.name} key={user.name + user.id} />
+            <UserCard
+              avatar={user.avatar}
+              name={user.name}
+              key={user.name + user.id}
+            />
           ))}
     </div>
   );
