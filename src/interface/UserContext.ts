@@ -8,7 +8,6 @@ export interface EmailLoginArgs {
 export interface EmailSignUpArgs extends EmailLoginArgs {
   confirm: string;
   name: string;
-  avatar: File | null;
 }
 
 export interface UserContextType {

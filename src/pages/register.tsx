@@ -35,7 +35,6 @@ function Login() {
           password,
           name,
           confirm,
-          avatar: currentPhoto,
         });
       } catch (e: any) {
         setPassword("");

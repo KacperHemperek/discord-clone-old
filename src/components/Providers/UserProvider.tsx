@@ -45,13 +45,14 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
+  const [currentUserEmail, setCurretnUserEmail] = useState<string | null>(null);
 
   const {
     data: currentUser,
     isLoading: loadingUser,
     refetch: refetchUser,
   } = trpc.user.getUserByEmail.useQuery({
-    email: auth.currentUser?.email ?? null,
+    email: currentUserEmail,
   });
 
   const router = useRouter();
@@ -71,7 +72,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   );
 
   const emailSignUp = useCallback(
-    async ({ email, confirm, password, name, avatar }: EmailSignUpArgs) => {
+    async ({ email, confirm, password, name }: EmailSignUpArgs) => {
       try {
         if (password !== confirm) {
           throw new Error("Passwords must match");
@@ -82,8 +83,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
           email,
           name,
         });
-        console.log(avatar);
-        setNewPhoto(avatar);
+       
         router.push("/");
       } catch (e: any) {
         console.error(e);
@@ -98,15 +98,19 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     router.push("/login");
   }, [auth]);
 
-  async function handleAuthChange(user: User | null) {
-    if (!user) {
-      cookie.remove(firebaseCookie);
-      return;
-    }
-    const token = await user.getIdToken();
-    cookie.set(firebaseCookie, token, { expires: 14 });
-    refetchUser();
-  }
+  const handleAuthChange = useCallback(
+    async (user: User | null) => {
+      if (!user) {
+        cookie.remove(firebaseCookie);
+        return;
+      }
+      console.log(user);
+      const token = await user.getIdToken();
+      cookie.set(firebaseCookie, token, { expires: 14 });
+      setCurretnUserEmail(user.email);
+    },
+    [firebaseCookie, currentUserEmail]
+  );
 
   const addPhotoToUser = useCallback(
     async (user: PrismaUser) => {
@@ -133,7 +137,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     const channel = pusherClient.subscribe("user-connection");
 
     channel.bind("user-created", async (user: PrismaUser) => {
-      console.log(newPhoto);
       await addPhotoToUser(user);
       refetchUser();
     });
