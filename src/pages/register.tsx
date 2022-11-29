@@ -60,6 +60,27 @@ function Login() {
         className="flex w-80 flex-col rounded-xl bg-brandgray-500 p-8 shadow-lg md:w-96"
       >
         <h1 className=" mb-6 text-xl font-bold uppercase ">Register</h1>
+        <div
+          className={`${
+            currentPhotoUrl ? "bg-transparent" : " bg-brandgray-200 "
+          } relative mb-4 h-24 w-24 overflow-hidden rounded-lg `}
+        >
+          <Image
+            layout="fill"
+            src={currentPhotoUrl ?? AvatarImage}
+            alt="user avatar"
+            className="object-cover"
+          />
+        </div>
+        <label className="mb-5">
+          Add user photo
+          <input
+            type="file"
+            onChange={onImageChange}
+            className="hidden"
+            accept="image/*"
+          />
+        </label>
 
         <input
           type="text"

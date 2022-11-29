@@ -1,12 +1,11 @@
 import Image from "next/image";
 import React, { useCallback, useState } from "react";
-import ModalContainer from "./ModalContainer";
 
+import ModalContainer from "./ModalContainer";
 import AvatarPlaceholder from "@assets/avatar-image.png";
 import useAuth from "@hooks/useAuth";
 import { MdEdit } from "react-icons/md";
 import { trpc } from "@utils/trpc";
-import { User } from "@prisma/client";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { usersStorage } from "@utils/firebase";
 
@@ -18,47 +17,102 @@ function AccountDetails() {
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
   const { mutate: editUser } = trpc.user.editUser.useMutation();
 
-  function submitUser(e: React.FormEvent) {
+  const photoUrl = newPhoto && URL.createObjectURL(newPhoto);
+
+  async function submitEditUser(e: React.FormEvent) {
     e.preventDefault();
     editUser({ name: nameVal, userId: currentUser?.id ?? null });
 
     setNameVal(currentUser?.name ?? "");
   }
 
-  const addPhotoToUser = useCallback(
-    async (user: User) => {
-      if (!newPhoto) {
-        return;
-      }
-      const userImageRef = ref(usersStorage, `${user.id}/${newPhoto.name}`);
+  const addPhotoToUser = useCallback(async () => {
+    if (!newPhoto || !currentUser?.id) {
+      return;
+    }
+    const userImageRef = ref(
+      usersStorage,
+      `${currentUser?.id}/${newPhoto.name}`
+    );
 
-      await uploadBytes(userImageRef, newPhoto);
+    await uploadBytes(userImageRef, newPhoto);
 
-      const photoRef = ref(userImageRef);
-      const photo = await getDownloadURL(photoRef);
+    const photoRef = ref(userImageRef);
+    const photo = await getDownloadURL(photoRef);
 
-      editUser({ avatar: photo, userId: currentUser?.id ?? null });
+    editUser({ avatar: photo, userId: currentUser?.id ?? null });
 
-      setNewPhoto(null);
-    },
-    [newPhoto]
-  );
+    setNewPhoto(null);
+  }, [newPhoto]);
+
+  function onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files && event.target.files[0]) {
+      const imageUrl = URL.createObjectURL(event.target.files[0]);
+
+      setNewPhoto(event.target.files[0]);
+    }
+  }
+
+  const displayContent = useCallback(() => {
+    return editProfile ? (
+      <>
+        <label className="mb-5 max-w-fit cursor-pointer hover:underline">
+          Change photo
+          <input
+            type="file"
+            onChange={onImageChange}
+            className="hidden"
+            accept="image/*"
+          />
+        </label>
+        <input
+          className={"input"}
+          placeholder={"Name"}
+          value={nameVal}
+          onChange={(e) => {
+            setNameVal(e.target.value);
+          }}
+          disabled={!editProfile}
+        />
+        <div className="flex w-fit space-x-4 self-end">
+          <button onClick={resetForm} className="btn bg-red-500">
+            Discard
+          </button>
+          <button type="submit" className="btn max-w-fit ">
+            Save
+          </button>
+        </div>
+      </>
+    ) : (
+      <>
+        <div className="mb-6">
+          <p className="text-sm  text-brandgray-200">Name</p>
+          <h4 className="text-lg font-medium ">{currentUser?.name}</h4>
+        </div>
+        <div className="mb-6">
+          <p className="text-sm  text-brandgray-200">Email</p>
+          <h4 className="text-lg font-medium ">{currentUser?.email}</h4>
+        </div>
+      </>
+    );
+  }, [currentUser, editProfile]);
 
   function resetForm() {
     setEditProfile(false);
     setNameVal(currentUser?.name ?? "");
+    setNewPhoto(null);
   }
 
   return (
-    <ModalContainer isForm handleSubmit={submitUser}>
+    <ModalContainer isForm handleSubmit={submitEditUser}>
       <div className=" flex justify-between align-top">
         <div
-          className={
-            "relative mb-4 h-24 w-24 overflow-hidden rounded-lg bg-brandgray-200 "
-          }
+          className={`${
+            editProfile ? "mb-4" : "mb-8"
+          } relative h-24 w-24 overflow-hidden rounded-lg bg-brandgray-200 `}
         >
           <Image
-            src={AvatarPlaceholder}
+            src={photoUrl ?? currentUser?.avatar ?? AvatarPlaceholder}
             alt={"current avatar image "}
             layout={"fill"}
             className={"object-cover"}
@@ -73,36 +127,7 @@ function AccountDetails() {
           </button>
         )}
       </div>
-      <label className="mb-5 max-w-fit cursor-pointer hover:underline">
-        Change photo
-        <input
-          type="file"
-          onChange={() => {}}
-          className="hidden"
-          accept="image/*"
-        />
-      </label>
-      <input
-        className={`${
-          editProfile ? "cursor-auto" : "cursor-not-allowed"
-        } input`}
-        placeholder={"Name"}
-        value={!editProfile ? currentUser?.name : nameVal}
-        onChange={(e) => {
-          setNameVal(e.target.value);
-        }}
-        disabled={!editProfile}
-      />
-      {editProfile && (
-        <div className="flex w-fit space-x-4 self-end">
-          <button onClick={resetForm} className="btn bg-red-500">
-            Discard
-          </button>
-          <button type="submit" className="btn max-w-fit ">
-            Save
-          </button>
-        </div>
-      )}
+      {displayContent()}
     </ModalContainer>
   );
 }
