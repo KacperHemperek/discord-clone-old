@@ -1,13 +1,13 @@
 import { User } from "@prisma/client";
 
 export interface EmailLoginArgs {
-  email: string;
-  password: string;
+  email: string ;
+  password: string ;
 }
 
 export interface EmailSignUpArgs extends EmailLoginArgs {
-  confirm: string;
-  name: string;
+  confirm: string ;
+  name: string ;
 }
 
 export interface UserContextType {

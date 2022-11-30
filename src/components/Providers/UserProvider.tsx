@@ -41,7 +41,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const { mutate: createUser, data: createdUserData } =
     trpc.user.createUser.useMutation();
 
-
   const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [currentUserEmail, setCurretnUserEmail] = useState<string | null>(null);
 
@@ -75,6 +74,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         if (password !== confirm) {
           throw new Error("Passwords must match");
         }
+
         await createUserWithEmailAndPassword(auth, email, password);
 
         createUser({
