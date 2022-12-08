@@ -6,18 +6,27 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 
 import useAuth from "@hooks/useAuth";
+import { formatReactTostifyError } from "@helpers/firebaseError";
 
 function Login() {
-  const { emailLogin } = useAuth();
+  const { emailLogin, loginError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     toast.promise(async () => emailLogin({ email, password }), {
-      pending: "Waiting for response...",
+      pending: "Waiting for authentication...",
       success: "User logged in!",
-      error: "Couldn't login user!",
+      error: {
+        render({ data }) {
+          console.error(data);
+          setPassword("");
+          return (
+            <span className="capitalize">{formatReactTostifyError(data)}</span>
+          );
+        },
+      },
     });
   }
 

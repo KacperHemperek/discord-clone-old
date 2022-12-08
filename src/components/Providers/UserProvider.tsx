@@ -10,16 +10,36 @@ import {
 } from "firebase/auth";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-import { auth, usersStorage } from "@utils/firebase";
+import { auth } from "@utils/firebase";
 import { trpc } from "@utils/trpc";
 import { noop } from "@helpers/noop";
-import {
-  EmailLoginArgs,
-  EmailSignUpArgs,
-  UserContextType,
-} from "@interface/UserContext";
+// import {
+//   EmailLoginArgs,
+//   EmailSignUpArgs,
+//   UserContextType,
+// } from "@interface/UserContext";
 import { pusherClient } from "@utils/pusherClient";
 import { User as PrismaUser } from "@prisma/client";
+
+export interface EmailLoginArgs {
+  email: string;
+  password: string;
+}
+
+export interface EmailSignUpArgs extends EmailLoginArgs {
+  confirm: string;
+  name: string;
+}
+
+export interface UserContextType {
+  emailLogin: ({ email, password }: EmailLoginArgs) => void;
+  emailSignUp: ({ email, password, name, confirm }: EmailSignUpArgs) => void;
+  logOut: () => void;
+  currentUser: PrismaUser | null | undefined;
+  loadingUser: boolean;
+  loginError: undefined | null | string;
+  signUpError: undefined | null | string;
+}
 
 export const UserContext = React.createContext<UserContextType>({
   emailLogin: () => {
@@ -33,6 +53,8 @@ export const UserContext = React.createContext<UserContextType>({
   },
   currentUser: null,
   loadingUser: false,
+  loginError: null,
+  signUpError: null,
 });
 
 const firebaseCookie = "firebaseToken";
@@ -43,6 +65,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [currentUserEmail, setCurretnUserEmail] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | undefined>();
+  const [signUpError, setSignUpError] = useState<string | undefined>();
 
   const {
     data: currentUser,
@@ -62,7 +86,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
           router.push("/");
         }
       } catch (e: any) {
-        throw new Error(e.code);
+        throw new Error(e);
       }
     },
     []
@@ -72,6 +96,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     async ({ email, confirm, password, name }: EmailSignUpArgs) => {
       try {
         if (password !== confirm) {
+          setSignUpError("Passwords must match");
           throw new Error("Passwords must match");
         }
 
@@ -85,6 +110,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         router.push("/");
       } catch (e: any) {
         console.error(e);
+        setSignUpError(e.message);
         throw new Error(e);
       }
     },
@@ -124,8 +150,24 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const createContext = useCallback((): UserContextType => {
-    return { emailLogin, emailSignUp, logOut, currentUser, loadingUser };
-  }, [currentUser, emailLogin, emailSignUp, logOut, currentMail, loadingUser]);
+    return {
+      emailLogin,
+      emailSignUp,
+      logOut,
+      currentUser,
+      loadingUser,
+      loginError,
+      signUpError,
+    };
+  }, [
+    currentUser,
+    emailLogin,
+    emailSignUp,
+    logOut,
+    loadingUser,
+    loginError,
+    signUpError,
+  ]);
 
   return (
     <UserContext.Provider value={createContext()}>
