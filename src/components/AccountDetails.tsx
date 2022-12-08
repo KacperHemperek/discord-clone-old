@@ -62,7 +62,7 @@ function AccountDetails() {
       setNewPhoto(event.target.files[0]);
     }
   }
-
+  //TODO: validate inputs edit user
   const displayContent = useCallback(() => {
     return editProfile ? (
       <>
