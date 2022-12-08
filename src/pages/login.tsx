@@ -9,7 +9,7 @@ import useAuth from "@hooks/useAuth";
 import { formatReactTostifyError } from "@helpers/firebaseError";
 
 function Login() {
-  const { emailLogin, loginError } = useAuth();
+  const { emailLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

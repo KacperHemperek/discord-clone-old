@@ -7,6 +7,7 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 
 import useAuth from "@hooks/useAuth";
+import { formatReactTostifyError } from "@helpers/firebaseError";
 
 function Login() {
   const { emailSignUp } = useAuth();
@@ -16,28 +17,29 @@ function Login() {
   const nameRef = useRef<HTMLInputElement>(null);
 
   async function addUser(e: React.FormEvent) {
-    const signUp = async () => {
-      try {
-        emailSignUp({
-          email: emailRef.current?.value as string,
-          password: passwordRef.current?.value as string,
-          name: nameRef.current?.value as string,
-          confirm: confirmRef.current?.value as string,
-        });
-      } catch (e: any) {
-        (passwordRef.current as HTMLInputElement).value = "";
-        (emailRef.current as HTMLInputElement).value = "";
-        (nameRef.current as HTMLInputElement).value = "";
-        (confirmRef.current as HTMLInputElement).value = "";
-        throw new Error(e);
-      }
-    };
-
+    e.preventDefault();
+    const signUp = async () =>
+      emailSignUp({
+        email: emailRef.current?.value as string,
+        password: passwordRef.current?.value as string,
+        name: nameRef.current?.value as string,
+        confirm: confirmRef.current?.value as string,
+      });
     e.preventDefault();
     toast.promise(signUp, {
       pending: "Waiting for response...",
       success: "Signed in successfully",
-      error: "Couldn't sign up user",
+      error: {
+        render({ data }) {
+          (passwordRef.current as HTMLInputElement).value = "";
+          (emailRef.current as HTMLInputElement).value = "";
+          (nameRef.current as HTMLInputElement).value = "";
+          (confirmRef.current as HTMLInputElement).value = "";
+          return (
+            <span className="capitalize">{formatReactTostifyError(data)}</span>
+          );
+        },
+      },
     });
   }
 

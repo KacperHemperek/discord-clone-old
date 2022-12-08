@@ -20,6 +20,8 @@ import { noop } from "@helpers/noop";
 // } from "@interface/UserContext";
 import { pusherClient } from "@utils/pusherClient";
 import { User as PrismaUser } from "@prisma/client";
+import { formatFireabseError } from "@helpers/firebaseError";
+import { FirebaseError } from "firebase/app";
 
 export interface EmailLoginArgs {
   email: string;
@@ -37,8 +39,6 @@ export interface UserContextType {
   logOut: () => void;
   currentUser: PrismaUser | null | undefined;
   loadingUser: boolean;
-  loginError: undefined | null | string;
-  signUpError: undefined | null | string;
 }
 
 export const UserContext = React.createContext<UserContextType>({
@@ -53,20 +53,15 @@ export const UserContext = React.createContext<UserContextType>({
   },
   currentUser: null,
   loadingUser: false,
-  loginError: null,
-  signUpError: null,
 });
 
 const firebaseCookie = "firebaseToken";
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  const { mutate: createUser, data: createdUserData } =
+  const { mutateAsync: createUser, data: createdUserData } =
     trpc.user.createUser.useMutation();
 
-  const [currentMail, setCurrentMail] = useState<string | null>(null);
   const [currentUserEmail, setCurretnUserEmail] = useState<string | null>(null);
-  const [loginError, setLoginError] = useState<string | undefined>();
-  const [signUpError, setSignUpError] = useState<string | undefined>();
 
   const {
     data: currentUser,
@@ -86,7 +81,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
           router.push("/");
         }
       } catch (e: any) {
-        throw new Error(e);
+        throw new Error(formatFireabseError(e));
       }
     },
     []
@@ -94,15 +89,24 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const emailSignUp = useCallback(
     async ({ email, confirm, password, name }: EmailSignUpArgs) => {
-      try {
-        if (password !== confirm) {
-          setSignUpError("Passwords must match");
-          throw new Error("Passwords must match");
-        }
+      if (password !== confirm) {
+        const err = new FirebaseError(
+          "Passwords not matching ",
+          "passwords-does-not-match"
+        );
 
+        throw new Error(formatFireabseError(err));
+      }
+
+      if (!name) {
+        const err = new FirebaseError("Name not provided", "name-not-provided");
+        throw new Error(formatFireabseError(err));
+      }
+
+      try {
         await createUserWithEmailAndPassword(auth, email, password);
 
-        createUser({
+        await createUser({
           email,
           name,
         });
@@ -110,8 +114,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         router.push("/");
       } catch (e: any) {
         console.error(e);
-        setSignUpError(e.message);
-        throw new Error(e);
+
+        throw new Error(formatFireabseError(e.code));
       }
     },
     []
@@ -156,18 +160,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       logOut,
       currentUser,
       loadingUser,
-      loginError,
-      signUpError,
     };
-  }, [
-    currentUser,
-    emailLogin,
-    emailSignUp,
-    logOut,
-    loadingUser,
-    loginError,
-    signUpError,
-  ]);
+  }, [currentUser, emailLogin, emailSignUp, logOut, loadingUser]);
 
   return (
     <UserContext.Provider value={createContext()}>
