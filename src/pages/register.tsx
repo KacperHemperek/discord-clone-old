@@ -11,19 +11,19 @@ import { formatReactTostifyError } from "@helpers/firebaseError";
 
 function Login() {
   const { emailSignUp } = useAuth();
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const confirmRef = useRef<HTMLInputElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirm, setConfirm] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
   async function addUser(e: React.FormEvent) {
     e.preventDefault();
     const signUp = async () =>
       emailSignUp({
-        email: emailRef.current?.value as string,
-        password: passwordRef.current?.value as string,
-        name: nameRef.current?.value as string,
-        confirm: confirmRef.current?.value as string,
+        email,
+        password,
+        name,
+        confirm,
       });
     e.preventDefault();
     toast.promise(signUp, {
@@ -31,10 +31,10 @@ function Login() {
       success: "Signed in successfully",
       error: {
         render({ data }) {
-          (passwordRef.current as HTMLInputElement).value = "";
-          (emailRef.current as HTMLInputElement).value = "";
-          (nameRef.current as HTMLInputElement).value = "";
-          (confirmRef.current as HTMLInputElement).value = "";
+          setEmail("");
+          setConfirm("");
+          setName("");
+          setPassword("");
           return (
             <span className="capitalize">{formatReactTostifyError(data)}</span>
           );
@@ -53,19 +53,22 @@ function Login() {
 
         <input
           type="text"
-          ref={nameRef}
+          onChange={(e) => setName(e.target.value)}
+          value={name}
           className="input"
           placeholder={"Your Name"}
         />
         <input
           type="email"
-          ref={emailRef}
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
           className="input"
           placeholder={"Email"}
         />
         <input
           type="password"
-          ref={passwordRef}
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
           className="input"
           placeholder={"Password"}
         />
@@ -73,14 +76,19 @@ function Login() {
           type="password"
           className="input mb-4"
           placeholder={"Confirm Password"}
-          ref={confirmRef}
+          onChange={(e) => setConfirm(e.target.value)}
+          value={confirm}
         />
         <Link href="/login">
           <p className="mb-8 cursor-pointer underline">
             Already have an account? Login!
           </p>
         </Link>
-        <button type="submit" className="btn self-end">
+        <button
+          type="submit"
+          className="btn self-end"
+          disabled={!email || !password || !confirm || !name}
+        >
           Register
         </button>
       </form>

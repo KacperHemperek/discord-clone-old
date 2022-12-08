@@ -75,6 +75,7 @@ function AccountDetails() {
             accept="image/*"
           />
         </label>
+
         <input
           className={"input"}
           placeholder={"Name"}
@@ -121,6 +122,7 @@ function AccountDetails() {
             editProfile ? "mb-4" : "mb-8"
           } relative h-24 w-24 overflow-hidden rounded-lg bg-brandgray-200 `}
         >
+          {/* FIXME: image is undefined */}
           <Image
             src={photoUrl ?? currentUser?.avatar ?? AvatarPlaceholder}
             alt={"current avatar image "}

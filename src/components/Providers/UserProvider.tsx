@@ -75,6 +75,21 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   const emailLogin = useCallback(
     async ({ email, password }: EmailLoginArgs) => {
+      if (!email) {
+        const err = new FirebaseError("email not provided", "invalid-email");
+
+        throw new Error(formatFireabseError(err));
+      }
+
+      if (!password) {
+        const err = new FirebaseError(
+          "password not provided",
+          "invalid-password"
+        );
+
+        throw new Error(formatFireabseError(err));
+      }
+
       try {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         if (cred) {

@@ -9,7 +9,7 @@
     font-family: "Noto sans", sans-serif;
   }
   .btn {
-    @apply rounded-lg bg-brandblue py-2 px-4 text-center text-lg text-brandwhite;
+    @apply rounded-lg bg-brandblue py-2 px-4 text-center text-lg text-brandwhite transition-all hover:bg-brandblue/90 active:scale-95 disabled:bg-brandblue/20 disabled:text-gray-600;
   }
   .input {
     @apply mb-8 w-full rounded-lg bg-brandgray-200 px-4 py-3 text-lg outline-brandblue placeholder:text-brandgray-100;

@@ -57,7 +57,12 @@ function Login() {
             Don&apos;t have an account yet? Register!
           </p>
         </Link>
-        <button className="btn self-end">Log in</button>
+        <button
+          className={`btn  self-end `}
+          disabled={!email || !password}
+        >
+          Log in
+        </button>
       </form>
     </div>
   );
