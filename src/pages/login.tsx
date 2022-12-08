@@ -53,14 +53,11 @@ function Login() {
         />
 
         <Link href="/register">
-          <p className="mb-8 cursor-pointer underline">
+          <p className="mb-8 max-w-fit cursor-pointer underline">
             Don&apos;t have an account yet? Register!
           </p>
         </Link>
-        <button
-          className={`btn  self-end `}
-          disabled={!email || !password}
-        >
+        <button className={`btn w-full`} disabled={!email || !password}>
           Log in
         </button>
       </form>

@@ -80,13 +80,13 @@ function Login() {
           value={confirm}
         />
         <Link href="/login">
-          <p className="mb-8 cursor-pointer underline">
+          <p className="mb-8 max-w-fit cursor-pointer underline">
             Already have an account? Login!
           </p>
         </Link>
         <button
           type="submit"
-          className="btn self-end"
+          className="btn w-full "
           disabled={!email || !password || !confirm || !name}
         >
           Register
