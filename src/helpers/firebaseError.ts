@@ -15,7 +15,6 @@ const ErrorStrings = Object.keys(AUTH_ERRORS);
 type AuthErrorKeys = keyof typeof AUTH_ERRORS;
 
 export const formatFireabseError = (err: FirebaseError) => {
-  //FIXME: Error is not defined when user is already created (register)
   // if (!err.code) {
   //   return AUTH_ERRORS.unknown_error;
   // }
