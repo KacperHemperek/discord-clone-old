@@ -1,45 +1,34 @@
 import { FirebaseError } from "firebase/app";
 
-enum AUTH_ERROR {
-  wrong_password = "Wrong Password",
-  invalid_password = "Invalid Password",
-  email_already_exists = "Account with this email already exists",
-  invalid_email = "Given email is invalid",
-  user_not_found = "User does not exist",
-  name_not_provided = "User name is not provided",
-  passwords_not_match = "Passwords must match",
-  unknown_error = "Unknown authentication error",
-}
+const AUTH_ERRORS = {
+  "auth/wrong-password": "Wrong Password",
+  "auth/invalid-password": "Invalid Password",
+  "auth/email-already-in-use": "Account with this email already exists",
+  "auth/invalid-email": "Given email is invalid",
+  "auth/user-not-found": "User does not exist",
+  "auth/name-not-provided": "User name is not provided",
+  "auth/passwords-not-match": "Passwords must match",
+  unknown_error: "Unknown authentication error",
+};
+
+const ErrorStrings = Object.keys(AUTH_ERRORS);
+type AuthErrorKeys = keyof typeof AUTH_ERRORS;
 
 export const formatFireabseError = (err: FirebaseError) => {
-  if (!err) {
-    return AUTH_ERROR.unknown_error;
-  }
-  console.warn(err);
+  //FIXME: Error is not defined when user is already created (register)
+  // if (!err.code) {
+  //   return AUTH_ERRORS.unknown_error;
+  // }
 
-  if (err.message.match(/wrong-password/gi)) {
-    return AUTH_ERROR.wrong_password;
-  }
-  if (err.message.match(/invalid-password/gi)) {
-    return AUTH_ERROR.invalid_password;
-  }
-  if (err.message.match(/email-already-exists/gi)) {
-    return AUTH_ERROR.email_already_exists;
-  }
-  if (err.message.match(/invalid-email/gi)) {
-    return AUTH_ERROR.invalid_email;
-  }
-  if (err.message.match(/user-not-found/gi)) {
-    return AUTH_ERROR.user_not_found;
-  }
-  if (err.message.match(/name-not-provided/gi)) {
-    return AUTH_ERROR.name_not_provided;
-  }
-  if (err.message.match(/passwords-does-not-match/gi)) {
-    return AUTH_ERROR.passwords_not_match;
+  const isFirebaseErrorCode = (x: string): x is AuthErrorKeys =>
+    ErrorStrings.includes(x);
+
+  console.warn(err.code);
+  if (!isFirebaseErrorCode(err.code)) {
+    return AUTH_ERRORS.unknown_error;
   }
 
-  return AUTH_ERROR.unknown_error;
+  return AUTH_ERRORS[err.code];
 };
 
 export const formatReactTostifyError = (err: any) => {

@@ -130,7 +130,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       } catch (e: any) {
         console.error(e);
 
-        throw new Error(formatFireabseError(e.code));
+        throw new Error(formatFireabseError(e));
       }
     },
     []
