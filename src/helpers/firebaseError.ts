@@ -15,10 +15,6 @@ const ErrorStrings = Object.keys(AUTH_ERRORS);
 type AuthErrorKeys = keyof typeof AUTH_ERRORS;
 
 export const formatFireabseError = (err: FirebaseError) => {
-  // if (!err.code) {
-  //   return AUTH_ERRORS.unknown_error;
-  // }
-
   const isFirebaseErrorCode = (x: string): x is AuthErrorKeys =>
     ErrorStrings.includes(x);
 
@@ -31,6 +27,5 @@ export const formatFireabseError = (err: FirebaseError) => {
 };
 
 export const formatReactTostifyError = (err: any) => {
-  console.log(err.message);
   return err.message;
 };
