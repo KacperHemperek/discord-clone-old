@@ -92,7 +92,7 @@ export const channel = router({
 
       const messages = await prisma?.message.findMany({
         where: { channelId },
-        select: { user: true, body: true, createdAt: true, id: true },
+        select: { user: true, body: true, createdAt: true },
         orderBy: { createdAt: "desc" },
       });
 

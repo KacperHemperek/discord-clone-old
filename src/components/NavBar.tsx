@@ -86,7 +86,7 @@ function NavBar() {
       <MdClose className="h-6 w-6" />
     </button>
   );
-
+  //FIXME: overlay and modal doesn't close on overlay click`
   return (
     <>
       <Overlay onClick={closeNav} show={navOpen && !modalOpen} />

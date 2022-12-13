@@ -3,19 +3,17 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { User } from "@prisma/client";
 import autoAnimate from "@formkit/auto-animate";
 
-import MessageComponent from "@components/Message";
+import MessageComponent, { MessageProps } from "@components/Message";
 import MessageSceleton from "@components/Sceletons/MessageSceleton";
-import useNav from "@hooks/useNav";
-import { CHANNEL_NAME, pusherClient } from "@utils/pusherClient";
+
 import { MdMessage } from "react-icons/md";
 
 type ChatProps = {
-  messages:
-    | { user: User; id: number; body: string; createdAt: Date }[]
-    | undefined;
+  messages: MessageProps[] | undefined;
   loading?: boolean;
 };
-
+//TODO: refactor messages to store them in state and check if they are on
+//db instead of taking them from db and posting only after they are created with backend
 function Chat({ messages, loading }: ChatProps) {
   const chatRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -39,13 +37,13 @@ function Chat({ messages, loading }: ChatProps) {
       );
     }
 
-    return messages?.map(({ body, createdAt, id, user }) => (
+    return messages?.map(({ body, createdAt, user, sent }) => (
       <MessageComponent
         body={body}
         user={user}
         createdAt={createdAt}
-        id={id}
-        key={id}
+        sent={sent}
+        key={body + createdAt.getTime()}
       />
     ));
   }, [loading, messages]);
