@@ -85,17 +85,16 @@ function AccountDetails() {
           }}
           disabled={!editProfile}
         />
-        <div className="flex w-fit space-x-4 self-end">
-          <button
-            onClick={resetForm}
-            className="btn bg-red-500 hover:bg-red-500/90"
-          >
-            Discard
-          </button>
-          <button type="submit" className="btn max-w-fit ">
-            Save
-          </button>
-        </div>
+        <button type="submit" className="btn mb-4">
+          Save
+        </button>
+
+        <button
+          onClick={resetForm}
+          className="btn  bg-red-500 hover:bg-red-500/90"
+        >
+          Discard
+        </button>
       </>
     ) : (
       <>
