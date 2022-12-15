@@ -124,6 +124,8 @@ export const channel = router({
             id: channelId,
           });
         }
+
+        return newMessage;
       } catch (err) {
         console.error(err);
         throw new Error("Couldn't send message");
