@@ -47,7 +47,6 @@ function NavBar() {
   }, []);
 
   const closeNav = useCallback(() => {
-    console.log("closing nav");
     setNav(false);
   }, []);
 

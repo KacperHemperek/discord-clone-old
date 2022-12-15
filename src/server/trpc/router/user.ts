@@ -27,7 +27,6 @@ export const user = router({
       })
     )
     .mutation(async ({ input }) => {
-      console.log({ input });
       const welcomeChannel = await prisma?.channel.findUnique({
         where: { name: "Welcome" },
       });

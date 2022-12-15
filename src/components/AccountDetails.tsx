@@ -25,7 +25,6 @@ function AccountDetails() {
       const newName = nameVal.trim() === "" ? null : nameVal;
 
       getFirebaseLink().then((photo) => {
-        console.log(photo);
         editUser({
           name: newName,
           avatar: photo,
@@ -52,7 +51,6 @@ function AccountDetails() {
     const photoRef = ref(userImageRef);
 
     const photo = await getDownloadURL(photoRef);
-    console.log(photo);
 
     return photo;
   }, [newPhoto, currentUser]);
