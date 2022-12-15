@@ -11,27 +11,22 @@ import Layout from "@layouts/layout";
 import { trpc } from "@utils/trpc";
 import { pusherClient } from "@utils/pusherClient";
 import { User } from "@prisma/client";
-import { MessageProps } from "@components/Message";
-import _ from "lodash";
 
 function ChatRoom() {
   const router = useRouter();
   const chatId = router.query.slug;
+
   const { currentUser, loadingUser } = useAuth();
   const chatRef = useRef<HTMLDivElement | null>(null);
-  const [message, setMessage] = useState("");
-  const [messagesState, setMessagesState] = useState<
-    | {
-        user: User;
-        body: string;
-        createdAt: Date;
-      }[]
-  >([]);
+  const messageInputRef = useRef<HTMLInputElement | null>(null);
 
   const { data } = trpc.channel.getUsers.useQuery({ id: Number(chatId) });
   const { mutate: addUser } = trpc.channel.addUser.useMutation();
-  const { mutate: sendMessage, isLoading } =
-    trpc.channel.sendMessage.useMutation();
+  const {
+    mutateAsync: sendMessage,
+    isLoading,
+    data: newMessage,
+  } = trpc.channel.sendMessage.useMutation();
   const {
     data: messagesFetched,
     isLoading: loadingMessages,
@@ -39,44 +34,16 @@ function ChatRoom() {
   } = trpc.channel.getMessages.useQuery({
     channelId: Number(chatId),
   });
-  const messages = useMemo<MessageProps[] | undefined>(() => {
-    console.log(messagesFetched);
-
-    if (messagesFetched && (!messagesState || messagesState?.length === 0)) {
-      setMessagesState(messagesFetched);
-    }
-    if (!messagesState || !messagesFetched) return [] as MessageProps[];
-    //FIXME: messages update but sent checkmark doesn't
-    const result: MessageProps[] = messagesState.map((item): MessageProps => {
-
-      if (messagesFetched.filter((curr) => _.isEqual(curr, item)).length > 0) {
-        return {
-          body: item.body,
-          user: item.user,
-          createdAt: item.createdAt,
-          sent: true,
-        };
-      } else {
-        return {
-          body: item.body,
-          user: item.user,
-          createdAt: item.createdAt,
-          sent: false,
-        };
-      }
-    });
-    return result;
-  }, [messagesFetched, messagesState]);
 
   async function handleSendMessage(e: React.FormEvent) {
     e.preventDefault();
-    if (message.trim() === "") return;
-    if (!currentUser?.id) return;
+    if (!messageInputRef.current?.value) return;
+
+    const message = messageInputRef.current.value;
+
+    if (message.trim() === "" || !currentUser?.id) return;
+
     try {
-      setMessagesState((prev) => [
-        { body: message, createdAt: new Date(), user: currentUser },
-        ...prev,
-      ]);
       await sendMessage({
         channelId: Number(chatId),
         message,
@@ -86,7 +53,7 @@ function ChatRoom() {
       console.error(err);
       throw new Error("sending message failed");
     }
-    setMessage("");
+    messageInputRef.current.value = "";
   }
 
   useEffect(() => {
@@ -112,9 +79,7 @@ function ChatRoom() {
     const channel = pusherClient.subscribe("chat-connection");
 
     channel.bind("chat-message", ({ id }: { id: number }) => {
-      console.log(id);
       if (String(id) === chatId) {
-        console.log("updating messages");
         updateMessages();
       }
     });
@@ -123,7 +88,7 @@ function ChatRoom() {
   return (
     <Layout>
       {/* messages */}
-      <Chat messages={messages} loading={loadingMessages} />
+      <Chat messages={messagesFetched} loading={loadingMessages} />
       {/* send message */}
       <form
         onSubmit={handleSendMessage}
@@ -133,8 +98,7 @@ function ChatRoom() {
           type={"text"}
           className="h-min flex-grow resize-none bg-transparent pl-4 outline-none placeholder:text-brandgray-100"
           placeholder="Type a message here"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          ref={messageInputRef}
         />
         <button className="flex h-10 w-10 items-center justify-center rounded-md bg-brandblue">
           <MdSend className=" h-4 w-4" />
