@@ -88,7 +88,7 @@ function AccountDetails() {
           }}
           disabled={!editProfile}
         />
-        <button type="submit" className="btn mb-4" disabled={!nameVal}>
+        <button type="submit" className="btn mb-4">
           Save
         </button>
 

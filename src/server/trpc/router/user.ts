@@ -65,13 +65,13 @@ export const user = router({
         return;
       }
       let user: User | null = null;
-      if (name && avatar) {
+      if (name && name.trim() !== "" && avatar) {
         user = await prisma.user.update({
           where: { id: userId },
           data: { name, avatar },
         });
       }
-      if (name) {
+      if (name && name.trim() !== "") {
         user = await prisma.user.update({
           where: { id: userId },
           data: { name },
