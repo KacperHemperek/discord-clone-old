@@ -70,20 +70,21 @@ export const user = router({
           where: { id: userId },
           data: { name, avatar },
         });
+        return user;
       }
       if (name && name.trim() !== "") {
         user = await prisma.user.update({
           where: { id: userId },
           data: { name },
         });
+        return user;
       }
       if (avatar) {
         user = await prisma.user.update({
           where: { id: userId },
           data: { avatar },
         });
+        return user;
       }
-
-      return user;
     }),
 });
