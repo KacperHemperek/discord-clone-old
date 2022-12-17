@@ -11,6 +11,8 @@ import Layout from "@layouts/layout";
 import { trpc } from "@utils/trpc";
 import { pusherClient } from "@utils/pusherClient";
 import { User } from "@prisma/client";
+import { TailSpin } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 function ChatRoom() {
   const router = useRouter();
@@ -24,8 +26,9 @@ function ChatRoom() {
   const { mutate: addUser } = trpc.channel.addUser.useMutation();
   const {
     mutateAsync: sendMessage,
-    isLoading,
+    isLoading: loadingSendingMessage,
     data: newMessage,
+    error: sendingMessageError,
   } = trpc.channel.sendMessage.useMutation();
   const {
     data: messagesFetched,
@@ -49,9 +52,10 @@ function ChatRoom() {
         message,
         userId: currentUser?.id ?? null,
       });
+      console.log(newMessage);
     } catch (err) {
       console.error(err);
-      throw new Error("sending message failed");
+      toast.error("Sorry we couldn't send your message");
     }
     messageInputRef.current.value = "";
   }
@@ -101,7 +105,11 @@ function ChatRoom() {
           ref={messageInputRef}
         />
         <button className="flex h-10 w-10 items-center justify-center rounded-md bg-brandblue">
-          <MdSend className=" h-4 w-4" />
+          {!loadingSendingMessage ? (
+            <MdSend className="h-4 w-4 " />
+          ) : (
+            <TailSpin height={20} width={20} color="#7dd3fc" />
+          )}
         </button>
       </form>
     </Layout>
