@@ -8,6 +8,7 @@ import { MdEdit } from "react-icons/md";
 import { trpc } from "@utils/trpc";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { usersStorage } from "@utils/firebase";
+import { toast } from "react-toastify";
 
 function AccountDetails() {
   const { currentUser } = useAuth();
@@ -15,7 +16,7 @@ function AccountDetails() {
   const [nameVal, setNameVal] = useState("");
   const [editProfile, setEditProfile] = useState(false);
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
-  const { mutate: editUser } = trpc.user.editUser.useMutation();
+  const { mutateAsync: editUser } = trpc.user.editUser.useMutation();
 
   const photoUrl = newPhoto && URL.createObjectURL(newPhoto);
 
@@ -24,15 +25,19 @@ function AccountDetails() {
       e.preventDefault();
       const newName = nameVal.trim() === "" ? null : nameVal;
 
-      getFirebaseLink().then((photo) => {
-        editUser({
-          name: newName,
-          avatar: photo,
-          userId: currentUser?.id ?? null,
-        });
+      getFirebaseLink().then(async (photo) => {
+        try {
+          await editUser({
+            name: newName,
+            avatar: photo,
+            userId: currentUser?.id ?? null,
+          });
+          toast.success("User updated successfully");
+          setEditProfile(false);
+        } catch (err) {
+          toast.error("Couldn't edit user");
+        }
       });
-
-      setNameVal(currentUser?.name ?? "");
     },
     [currentUser, nameVal]
   );
@@ -53,7 +58,7 @@ function AccountDetails() {
     const photo = await getDownloadURL(photoRef);
 
     return photo;
-  }, [newPhoto, currentUser]);
+  }, [newPhoto, currentUser, nameVal]);
 
   function onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -83,7 +88,7 @@ function AccountDetails() {
           }}
           disabled={!editProfile}
         />
-        <button type="submit" className="btn mb-4">
+        <button type="submit" className="btn mb-4" disabled={!nameVal}>
           Save
         </button>
 
@@ -106,7 +111,7 @@ function AccountDetails() {
         </div>
       </>
     );
-  }, [currentUser, editProfile]);
+  }, [currentUser, editProfile, nameVal]);
 
   function resetForm() {
     setEditProfile(false);
