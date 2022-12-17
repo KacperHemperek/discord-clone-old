@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 import useAuth from "@hooks/useAuth";
 import { formatReactTostifyError } from "@helpers/firebaseError";
+import { isEmpty } from "@helpers/isEmpty";
 
 function Login() {
   const { emailLogin } = useAuth();
@@ -57,7 +58,10 @@ function Login() {
             Don&apos;t have an account yet? Register!
           </p>
         </Link>
-        <button className={`btn w-full`} disabled={!email || !password}>
+        <button
+          className={`btn w-full`}
+          disabled={isEmpty(email) || isEmpty(password)}
+        >
           Log in
         </button>
       </form>

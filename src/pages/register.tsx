@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 import useAuth from "@hooks/useAuth";
 import { formatReactTostifyError } from "@helpers/firebaseError";
+import { isEmpty } from "@helpers/isEmpty";
 
 function Login() {
   const { emailSignUp } = useAuth();
@@ -87,7 +88,12 @@ function Login() {
         <button
           type="submit"
           className="btn w-full "
-          disabled={!email || !password || !confirm || !name}
+          disabled={
+            isEmpty(email) ||
+            isEmpty(password) ||
+            isEmpty(confirm) ||
+            isEmpty(name)
+          }
         >
           Register
         </button>
