@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
-import { User } from "@prisma/client";
 import autoAnimate from "@formkit/auto-animate";
 
 import MessageComponent, { MessageProps } from "@components/Message";
@@ -23,7 +22,7 @@ function Chat({ messages, loading }: ChatProps) {
     }
   }, []);
 
-  const renderMessages = useCallback(() => {
+  const renderMessages = () => {
     if (loading) {
       return [...Array(10)].map((_, i) => <MessageSceleton key={i} />);
     }
@@ -46,7 +45,7 @@ function Chat({ messages, loading }: ChatProps) {
         key={body + createdAt.getTime()}
       />
     ));
-  }, [loading, messages]);
+  };
 
   return (
     <div
