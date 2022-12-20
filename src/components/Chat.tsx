@@ -21,7 +21,7 @@ function Chat({ messages, loading }: ChatProps) {
       autoAnimate(chatRef.current);
     }
   }, []);
-
+  //FIXME: new chat doesn't display first message
   const renderMessages = () => {
     if (loading) {
       return [...Array(10)].map((_, i) => <MessageSceleton key={i} />);

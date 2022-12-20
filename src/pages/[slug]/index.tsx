@@ -10,7 +10,6 @@ import useAuth from "@hooks/useAuth";
 import Layout from "@layouts/layout";
 import { trpc } from "@utils/trpc";
 import { pusherClient } from "@utils/pusherClient";
-import { User } from "@prisma/client";
 import { TailSpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
 
@@ -29,7 +28,9 @@ function ChatRoom() {
     isLoading: loadingSendingMessage,
     data: newMessage,
     error: sendingMessageError,
+    isError,
   } = trpc.channel.sendMessage.useMutation();
+
   const {
     data: messagesFetched,
     isLoading: loadingMessages,
@@ -52,12 +53,18 @@ function ChatRoom() {
         message,
         userId: currentUser?.id ?? null,
       });
+      messageInputRef.current.value = "";
       console.log(newMessage);
+      if (isError) {
+        toast.error("Sorry we couldn't send your message");
+        console.error(sendingMessageError);
+        return;
+      }
+      updateMessages();
     } catch (err) {
       console.error(err);
       toast.error("Sorry we couldn't send your message");
     }
-    messageInputRef.current.value = "";
   }
 
   useEffect(() => {
